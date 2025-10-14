@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.fullName || user.username }} (@{{ user.username }}) / X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'x-blue': '#1d9bf0',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-black text-white min-h-screen">
+    <div class="min-h-screen flex">
+        <!-- Sidebar (même que home_twitter) -->
+        <div class="w-64 px-4 py-4 border-r border-gray-800">
+            <!-- Logo -->
+            <div class="mb-8 px-4">
+                <svg viewBox="0 0 24 24" class="w-8 h-8 fill-white">
+                    <g>
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                        </path>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <a href="/dashboard" class="flex items-center space-x-4 p-3 rounded-full hover:bg-gray-900">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <span class="text-xl">Accueil</span>
+                </a>
+                <a href="#" class="flex items-center space-x-4 p-3 rounded-full hover:bg-gray-900">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z" />
+                    </svg>
+                    <span class="text-xl">Explorer</span>
+                </a>
+                <a href="/profile" class="flex items-center space-x-4 p-3 rounded-full hover:bg-gray-900 font-medium">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span class="text-xl">Profil</span>
+                </a>
+            </nav>
+
+            <!-- Tweet Button -->
+            <div class="mt-8 px-4">
+                <button
+                    class="w-full bg-x-blue text-white font-bold py-3 px-6 rounded-full hover:bg-blue-600 transition-colors">
+                    Tweeter
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="mt-auto pt-4 px-4">
+                <div class="flex items-center justify-between p-3 rounded-full hover:bg-gray-900 cursor-pointer">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
+                            {{ user.fullName ? user.fullName.charAt(0).toUpperCase() :
+                            user.username.charAt(0).toUpperCase() }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium truncate">{{ user.fullName || user.username }}</div>
+                            <div class="text-gray-500 text-sm truncate">@{{ user.username }}</div>
+                        </div>
+                    </div>
+                    <form action="/logout" method="POST" class="inline">
+                        {{ csrfField() }}
+                        <button type="submit" class="text-gray-400 hover:text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Profile Content -->
+        <div class="flex-1 max-w-2xl border-r border-gray-800">
+            <!-- Header avec navigation -->
+            <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
+                <div class="flex items-center space-x-4">
+                    <button onclick="history.back()" class="p-2 rounded-full hover:bg-gray-900">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="text-xl font-bold">{{ user.fullName || user.username }}</h1>
+                        <p class="text-gray-500 text-sm">{{ user.tweetsCount }} Tweets</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Header -->
+            <div>
+                <!-- Cover Photo -->
+                <div class="h-48 bg-gradient-to-r from-blue-600 to-purple-600 relative">
+                    <!-- Profile Picture -->
+                    <div class="absolute -bottom-16 left-4">
+                        <div
+                            class="w-32 h-32 bg-gray-600 rounded-full border-4 border-black flex items-center justify-center text-4xl font-bold">
+                            {{ user.fullName ? user.fullName.charAt(0).toUpperCase() :
+                            user.username.charAt(0).toUpperCase() }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="pt-16 px-4 pb-4">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h1 class="text-xl font-bold">{{ user.fullName || user.username }}</h1>
+                                @if(user.verified)
+                                <svg class="w-5 h-5 text-x-blue" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                @endif
+                            </div>
+                            <p class="text-gray-500">@{{ user.username }}</p>
+                        </div>
+                        <button
+                            class="border border-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-900 transition-colors font-medium">
+                            Modifier le profil
+                        </button>
+                    </div>
+
+                    @if(user.bio)
+                    <p class="mb-4">{{ user.bio }}</p>
+                    @endif
+
+                    <!-- Profile Details -->
+                    <div class="flex flex-wrap items-center gap-4 text-gray-500 text-sm mb-4">
+                        @if(user.location)
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>{{ user.location }}</span>
+                        </div>
+                        @endif
+
+                        @if(user.website)
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                            <a href="{{ user.website }}" class="text-x-blue hover:underline">{{ user.website }}</a>
+                        </div>
+                        @endif
+
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3a4 4 0 118 0v4m-4 0v4m-4 0h8" />
+                            </svg>
+                            <span>Inscription {{ user.createdAt.toFormat('MMM yyyy') }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Following/Followers -->
+                    <div class="flex space-x-6">
+                        <a href="#" class="hover:underline">
+                            <span class="font-bold">{{ user.followingCount }}</span>
+                            <span class="text-gray-500"> abonnements</span>
+                        </a>
+                        <a href="#" class="hover:underline">
+                            <span class="font-bold">{{ user.followersCount }}</span>
+                            <span class="text-gray-500"> abonnés</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Navigation -->
+            <div class="border-b border-gray-800">
+                <nav class="flex">
+                    <a href="#"
+                        class="flex-1 text-center py-4 font-medium border-b-2 border-x-blue text-white hover:bg-gray-950">
+                        Tweets
+                    </a>
+                    <a href="#"
+                        class="flex-1 text-center py-4 font-medium text-gray-500 hover:bg-gray-950 hover:text-white">
+                        Réponses
+                    </a>
+                    <a href="#"
+                        class="flex-1 text-center py-4 font-medium text-gray-500 hover:bg-gray-950 hover:text-white">
+                        Médias
+                    </a>
+                    <a href="#"
+                        class="flex-1 text-center py-4 font-medium text-gray-500 hover:bg-gray-950 hover:text-white">
+                        J'aime
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Tweets Timeline -->
+            <div class="divide-y divide-gray-800">
+                <!-- Placeholder when no tweets -->
+                <div class="p-8 text-center">
+                    <h2 class="text-2xl font-bold mb-2">@{{ user.username }} n'a pas encore tweeté</h2>
+                    <p class="text-gray-500">Quand cette personne tweetera, ses Tweets s'afficheront ici.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar (même que home_twitter) -->
+        <div class="w-80 p-4">
+            <div class="bg-gray-900 rounded-2xl p-4 mb-4">
+                <h2 class="text-xl font-bold mb-4">Informations du profil</h2>
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <span class="text-gray-500">Nom d'utilisateur:</span>
+                        <span class="ml-2 font-medium">@{{ user.username }}</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">Email:</span>
+                        <span class="ml-2 font-medium">{{ user.email }}</span>
+                    </div>
+                    @if(user.birthDate)
+                    <div>
+                        <span class="text-gray-500">Date de naissance:</span>
+                        <span class="ml-2 font-medium">{{ user.birthDate.toFormat('dd/MM/yyyy') }}</span>
+                    </div>
+                    @endif
+                    <div>
+                        <span class="text-gray-500">Membre depuis:</span>
+                        <span class="ml-2 font-medium">{{ user.createdAt.toFormat('dd/MM/yyyy') }}</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">Compte:</span>
+                        <span class="ml-2 font-medium">{{ user.privateAccount ? 'Privé' : 'Public' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-2xl p-4">
+                <h2 class="text-xl font-bold mb-4">Statistiques</h2>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                        <p class="text-2xl font-bold">{{ user.tweetsCount }}</p>
+                        <p class="text-gray-500 text-sm">Tweets</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">{{ user.followersCount }}</p>
+                        <p class="text-gray-500 text-sm">Abonnés</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">{{ user.followingCount }}</p>
+                        <p class="text-gray-500 text-sm">Abonnements</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">0</p>
+                        <p class="text-gray-500 text-sm">J'aime</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

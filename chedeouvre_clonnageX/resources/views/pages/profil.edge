@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.fullName || user.username }} (@{{ user.username }}) / X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'x-blue': '#1d9bf0',
+                        'x-black': '#16181c',
+                        'x-dark': '#2f3336',
+                        'x-gray': '#71767b'
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        // Gestion des thèmes
+        const themes = {
+            noir: {
+                bg: 'bg-black',
+                text: 'text-white',
+                border: 'border-gray-800',
+                sidebar: 'bg-black',
+                hover: 'hover:bg-gray-900'
+            },
+            blanc: {
+                bg: 'bg-white',
+                text: 'text-black',
+                border: 'border-gray-200',
+                sidebar: 'bg-white',
+                hover: 'hover:bg-gray-100'
+            },
+            vert: {
+                bg: 'bg-green-900',
+                text: 'text-green-50',
+                border: 'border-green-700',
+                sidebar: 'bg-green-900',
+                hover: 'hover:bg-green-800'
+            },
+            rouge: {
+                bg: 'bg-red-900',
+                text: 'text-red-50',
+                border: 'border-red-700',
+                sidebar: 'bg-red-900',
+                hover: 'hover:bg-red-800'
+            },
+            rose: {
+                bg: 'bg-pink-900',
+                text: 'text-pink-50',
+                border: 'border-pink-700',
+                sidebar: 'bg-pink-900',
+                hover: 'hover:bg-pink-800'
+            },
+            bleu: {
+                bg: 'bg-blue-900',
+                text: 'text-blue-50',
+                border: 'border-blue-700',
+                sidebar: 'bg-blue-900',
+                hover: 'hover:bg-blue-800'
+            }
+        };
+
+        function changeTheme(themeName) {
+            const theme = themes[themeName];
+            const body = document.body;
+            const sidebar = document.querySelector('.sidebar');
+            const elements = document.querySelectorAll('[data-theme]');
+
+            // Supprimer toutes les classes de thème existantes
+            Object.values(themes).forEach(t => {
+                body.classList.remove(t.bg, t.text);
+                if (sidebar) {
+                    sidebar.classList.remove(t.sidebar, t.border);
+                }
+            });
+
+            // Appliquer le nouveau thème
+            body.classList.add(theme.bg, theme.text);
+            if (sidebar) {
+                sidebar.classList.add(theme.sidebar, theme.border);
+            }
+
+            // Sauvegarder le thème
+            localStorage.setItem('selectedTheme', themeName);
+        }
+
+        // Charger le thème sauvegardé
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'noir';
+            changeTheme(savedTheme);
+        });
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-black text-white font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar gauche -->
+        <div class="w-64 flex flex-col bg-black border-r border-gray-800 fixed h-full z-30 sidebar">
+            <div class="flex-1 flex flex-col min-h-0">
+                <!-- Logo X -->
+                <div class="mb-3 p-4">
+                    <svg class="w-7 h-7 fill-white" viewBox="0 0 24 24">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 overflow-hidden">
+                    <div class="space-y-1">
+                        <!-- Maison -->
+                        <a href="/dashboard"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            <span class="text-xl">Maison</span>
+                        </a>
+
+                        <!-- Explorer -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span class="text-xl">Explorer</span>
+                        </a>
+
+                        <!-- Notifications -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-5 5v-5zM4.868 3.303l5.657 5.657m0 0l5.657 5.657m0 0l5.657-5.657M4.868 19.317l5.657-5.657" />
+                            </svg>
+                            <span class="text-xl">Notifications</span>
+                        </a>
+
+                        <!-- Messages -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-xl">Messages</span>
+                        </a>
+
+                        <!-- Grok -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            <span class="text-xl">Grok</span>
+                        </a>
+
+                        <!-- Signets -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                            <span class="text-xl">Signets</span>
+                        </a>
+
+                        <!-- Prime -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            <span class="text-xl">Prime</span>
+                        </a>
+
+                        <!-- Profil -->
+                        <a href="/profile"
+                            class="flex items-center space-x-5 p-3 rounded-full bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="text-xl font-bold">Profil</span>
+                        </a>
+
+                        <!-- Plus d'options -->
+                        <a href="#"
+                            class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                            </svg>
+                            <span class="text-xl">Plus</span>
+                        </a>
+
+                        <!-- Changement de thème -->
+                        <div class="relative">
+                            <button onclick="toggleThemeSelector()"
+                                class="flex items-center space-x-5 p-3 rounded-full hover:bg-gray-900 transition-all duration-200 w-full">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
+                                </svg>
+                                <span class="text-xl">Thème</span>
+                            </button>
+
+                            <!-- Sélecteur de thème -->
+                            <div id="themeSelector"
+                                class="hidden absolute left-0 bottom-full mb-2 bg-gray-800 rounded-2xl p-4 shadow-lg z-50 min-w-max">
+                                <h3 class="text-white font-bold mb-3 text-sm">Choisir un thème</h3>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="changeTheme('noir')"
+                                        class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                                        <div class="w-6 h-6 bg-black border border-gray-600 rounded-full mb-1"></div>
+                                        <span class="text-xs text-white">Noir</span>
+                                    </button>
+                                    <button onclick="changeTheme('blanc')"
+                                        class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                                        <div class="w-6 h-6 bg-white border border-gray-600 rounded-full mb-1"></div>
+                                        <span class="text-xs text-white">Blanc</span>
+                                    </button>
+                                    <button onclick="changeTheme('vert')"
+                                        class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                                        <div class="w-6 h-6 bg-green-600 rounded-full mb-1"></div>
+                                        <span class="text-xs text-white">Vert</span>
+                                    </button>
+                                    <button onclick="changeTheme('rouge')"
+                                        class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                                        <div class="w-6 h-6 bg-red-600 rounded-full mb-1"></div>
+                                        <span class="text-xs text-white">Rouge</span>
+                                    </button>
+                                    <button onclick="changeTheme('rose')"
+                                        class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                                        <div class="w-6 h-6 bg-pink-600 rounded-full mb-1"></div>
+                                        <span class="text-xs text-white">Rose</span>
+                                    </button>
+                                    <button onclick="changeTheme('bleu')"
+                                        class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                                        <div class="w-6 h-6 bg-blue-600 rounded-full mb-1"></div>
+                                        <span class="text-xs text-white">Bleu</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bouton Poster -->
+                    <button
+                        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-full mt-6 transition-all duration-200 mx-4">
+                        Poster
+                    </button>
+                </nav>
+
+                <!-- Profil utilisateur -->
+                <div class="flex-shrink-0 px-4 pb-2 pt-2">
+                    <div
+                        class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 cursor-pointer transition-all duration-200 mb-2">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-xs">{{ user.username.charAt(0).toUpperCase()
+                                }}</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-white text-sm truncate">{{ user.fullName || user.username }}
+                            </div>
+                            <div class="text-gray-500 text-xs truncate">@{{ user.username }}</div>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                        </svg>
+                    </div>
+
+                    <!-- Bouton déconnexion -->
+                    <div class="pb-2">
+                        <form action="/logout" method="POST" class="w-full">
+                            {{ csrfField() }}
+                            <button type="submit"
+                                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-full transition-all duration-200 flex items-center justify-center space-x-2 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                    </path>
+                                </svg>
+                                <span>Déconnexion</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Profile Content -->
+        <div class="flex-1 ml-64 max-w-4xl">
+            <div class="flex">
+                <!-- Contenu principal du profil -->
+                <div class="flex-1 max-w-2xl border-r border-gray-800">
+                    <!-- Header avec navigation -->
+                    <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800 z-20">
+                        <div class="flex items-center space-x-4">
+                            <button onclick="history.back()" class="p-2 rounded-full hover:bg-gray-900">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-bold">{{ user.fullName || user.username }}</h1>
+                                <p class="text-gray-500 text-sm">0 posts</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Header -->
+                    <div>
+                        <!-- Cover Photo -->
+                        <div class="h-48 bg-gradient-to-r from-blue-600 to-purple-600 relative">
+                            <!-- Profile Picture -->
+                            <div class="absolute -bottom-16 left-4">
+                                <div
+                                    class="w-32 h-32 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full border-4 border-black flex items-center justify-center text-4xl font-bold text-white">
+                                    {{ user.fullName ? user.fullName.charAt(0).toUpperCase() :
+                                    user.username.charAt(0).toUpperCase() }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Info -->
+                        <div class="pt-16 px-4 pb-4">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <h1 class="text-xl font-bold">{{ user.fullName || user.username }}</h1>
+                                        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-gray-500">@{{ user.username }}</p>
+                                </div>
+                                <button
+                                    class="border border-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-900 transition-colors font-medium">
+                                    Modifier le profil
+                                </button>
+                            </div>
+
+                            <div class="mb-4">
+                                <p class="text-white mb-2">Développeuse passionnée par l'innovation technologique 🚀</p>
+                                <div class="flex items-center space-x-4 text-gray-500 text-sm">
+                                    <div class="flex items-center space-x-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span>Kinshasa, République démocratique du Congo</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>A rejoint en janvier 2024</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="flex space-x-6 mb-6">
+                                <div class="flex items-center space-x-1 cursor-pointer hover:underline">
+                                    <span class="font-bold text-white">42</span>
+                                    <span class="text-gray-500">abonnements</span>
+                                </div>
+                                <div class="flex items-center space-x-1 cursor-pointer hover:underline">
+                                    <span class="font-bold text-white">1,234</span>
+                                    <span class="text-gray-500">abonnés</span>
+                                </div>
+                            </div>
+
+                            <!-- Navigation des posts -->
+                            <div class="border-b border-gray-800">
+                                <div class="flex">
+                                    <button
+                                        class="flex-1 py-4 text-center font-medium border-b-2 border-blue-500 text-white">
+                                        Posts
+                                    </button>
+                                    <button class="flex-1 py-4 text-center font-medium text-gray-500 hover:text-white">
+                                        Réponses
+                                    </button>
+                                    <button class="flex-1 py-4 text-center font-medium text-gray-500 hover:text-white">
+                                        Médias
+                                    </button>
+                                    <button class="flex-1 py-4 text-center font-medium text-gray-500 hover:text-white">
+                                        J'aime
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Posts vides -->
+                            <div class="text-center py-16">
+                                <div class="text-gray-500 text-6xl mb-4">🐦</div>
+                                <h2 class="text-2xl font-bold text-white mb-2">Vous n'avez pas encore de Posts</h2>
+                                <p class="text-gray-500 mb-6">Quand vous en posterez un, il s'affichera ici.</p>
+                                <button
+                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition-all">
+                                    Poster maintenant
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar droite -->
+                <div class="w-80 p-4 space-y-4">
+                    <!-- Suggestions similaires à home_twitter -->
+                    <div class="bg-gray-900 rounded-2xl p-4">
+                        <h2 class="text-xl font-bold text-white mb-4">Qui suivre</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">JS</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-white">JavaScript</div>
+                                        <div class="text-gray-500 text-sm">@javascript</div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="bg-white hover:bg-gray-200 text-black font-bold py-1 px-4 rounded-full text-sm transition-all">
+                                    Suivre
+                                </button>
+                            </div>
+                        </div>
+                        <button class="text-blue-500 hover:underline text-sm mt-3">Afficher plus</button>
+                    </div>
+
+                    <!-- Tendances -->
+                    <div class="bg-gray-900 rounded-2xl p-4">
+                        <h2 class="text-xl font-bold text-white mb-4">Tendances pour vous</h2>
+                        <div class="space-y-3">
+                            <div class="hover:bg-gray-800 p-2 rounded transition-all cursor-pointer">
+                                <div class="text-gray-500 text-xs">Tendance en Informatique</div>
+                                <div class="font-bold text-white">#AdonisJS</div>
+                                <div class="text-gray-500 text-xs">1,234 posts</div>
+                            </div>
+                            <div class="hover:bg-gray-800 p-2 rounded transition-all cursor-pointer">
+                                <div class="text-gray-500 text-xs">Tendance en RDC</div>
+                                <div class="font-bold text-white">#Kinshasa</div>
+                                <div class="text-gray-500 text-xs">5,678 posts</div>
+                            </div>
+                        </div>
+                        <button class="text-blue-500 hover:underline text-sm mt-3">Afficher plus</button>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="bg-gray-900 rounded-2xl p-4 mt-4">
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-bold text-white mb-2">À propos</h3>
+                                <div class="space-y-1 text-gray-400 text-xs">
+                                    <a href="#" class="block hover:text-white transition-colors">Centre d'aide</a>
+                                    <a href="#" class="block hover:text-white transition-colors">Conditions
+                                        d'utilisation</a>
+                                    <a href="#" class="block hover:text-white transition-colors">Politique de
+                                        confidentialité</a>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-700 pt-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <div class="flex items-center space-x-1">
+                                        <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                                            <path
+                                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                        </svg>
+                                        <span class="text-gray-400">© 2025 X Corp.</span>
+                                    </div>
+                                </div>
+                                <div class="text-gray-400 text-xs mt-1">
+                                    Développé avec ❤️ par Marina Keet
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleThemeSelector() {
+            const selector = document.getElementById('themeSelector');
+            selector.classList.toggle('hidden');
+        }
+
+        // Fermer le sélecteur si on clique ailleurs
+        document.addEventListener('click', function (event) {
+            const selector = document.getElementById('themeSelector');
+            const themeButton = event.target.closest('.relative');
+
+            if (!themeButton && !selector.classList.contains('hidden')) {
+                selector.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
