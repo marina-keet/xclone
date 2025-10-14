@@ -269,12 +269,13 @@
                         class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 cursor-pointer transition-all duration-200 mb-2">
                         <div
                             class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                            <span class="text-white font-bold text-xs">{{ user.username.charAt(0).toUpperCase()
+                            <span class="text-white font-bold text-xs">{{ user.fullName ?
+                                user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()
                                 }}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="font-bold text-white text-sm truncate">Marina Keet</div>
-                            <div class="text-gray-500 text-xs truncate">@KeetMarina</div>
+                            <div class="font-bold text-white text-sm truncate">{{ user.username }}</div>
+                            <div class="text-gray-400 text-xs truncate">@{{ user.fullName }}</div>
                         </div>
                         <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path
@@ -325,7 +326,9 @@
                         <div class="flex space-x-4">
                             <div
                                 class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span class="text-white font-bold">{{ user.username.charAt(0).toUpperCase() }}</span>
+                                <span class="text-white font-bold">{{ user.fullName ?
+                                    user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()
+                                    }}</span>
                             </div>
                             <div class="flex-1">
                                 <textarea
