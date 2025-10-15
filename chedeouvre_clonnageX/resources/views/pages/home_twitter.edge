@@ -395,8 +395,321 @@
                                             </label>
                                             <button type="button"
                                                 class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">📊</button>
-                                            <button type="button"
-                                                class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">😊</button>
+                                            <div class="relative">
+                                                <button type="button" id="emojiButton"
+                                                    class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">😊</button>
+                                                <!-- Sélecteur d'emojis -->
+                                                <div id="emojiPicker"
+                                                    class="absolute bottom-12 left-0 bg-gray-800 border-2 border-gray-600 rounded-xl p-4 hidden z-50 shadow-2xl backdrop-blur-sm">
+                                                    <div class="bg-gray-900 rounded-lg p-2 mb-2">
+                                                        <h3 class="text-white text-sm font-semibold text-center">Choisir
+                                                            un emoji</h3>
+                                                    </div>
+                                                    <div
+                                                        class="grid grid-cols-6 gap-1 max-w-sm max-h-48 overflow-y-auto">
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😀</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😃</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😄</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😁</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😊</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😇</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🙂</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🙃</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😉</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😌</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😍</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥰</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😘</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😗</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😙</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😚</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😋</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😛</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😝</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😜</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤪</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤨</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🧐</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤓</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😎</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤩</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥳</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😏</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😒</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😞</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😔</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😟</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😕</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🙁</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☹️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😣</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😖</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😫</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😩</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥺</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😢</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😭</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😤</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😠</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😡</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤬</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤯</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😳</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥵</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥶</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😱</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😨</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😰</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😥</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😓</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤗</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤔</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤭</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤫</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤐</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥴</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😵</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤠</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🥸</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">😈</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👿</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👍</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👎</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👌</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">✌️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤞</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤟</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤘</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤙</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👈</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👉</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👆</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👇</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☝️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">✋</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤚</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🖐️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🖖</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👋</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤝</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">👏</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🙌</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💪</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🔥</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💯</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">❤️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💙</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💚</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💛</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🧡</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💜</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🖤</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤍</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🤎</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💔</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">❣️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💕</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💖</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💗</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💘</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💝</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💞</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💟</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☮️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">✝️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☪️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🕉️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☸️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">✡️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🔯</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🕎</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☯️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☦️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🛐</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">⛎</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♈</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♉</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♊</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♋</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♌</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♍</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♎</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♏</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♐</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♑</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♒</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">♓</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🆔</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">⚡</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💥</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">💫</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">⭐</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🌟</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">✨</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🌙</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☀️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🌈</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☁️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">⛅</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">⛈️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🌩️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">🌨️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">❄️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">☃️</button>
+                                                        <button type="button"
+                                                            class="emoji-btn text-3xl hover:bg-gray-600 hover:scale-110 p-3 rounded-lg transition-all duration-200 bg-gray-700">⛄</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <button type="button"
                                                 class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">📍</button>
                                         </div>
@@ -669,6 +982,50 @@
                 // Désactiver le bouton pour éviter les doubles soumissions
                 tweetButton.disabled = true;
                 tweetButton.textContent = 'Publication...';
+            });
+
+            // Gestion du sélecteur d'emojis
+            const emojiButton = document.getElementById('emojiButton');
+            const emojiPicker = document.getElementById('emojiPicker');
+            const emojiButtons = document.querySelectorAll('.emoji-btn');
+
+            // Toggle du sélecteur d'emojis
+            emojiButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                emojiPicker.classList.toggle('hidden');
+            });
+
+            // Fermer le sélecteur si on clique ailleurs
+            document.addEventListener('click', function (e) {
+                if (!emojiPicker.contains(e.target) && e.target !== emojiButton) {
+                    emojiPicker.classList.add('hidden');
+                }
+            });
+
+            // Ajouter les emojis au textarea
+            emojiButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const emoji = this.textContent;
+                    const cursorPosition = tweetContent.selectionStart;
+                    const textBefore = tweetContent.value.substring(0, cursorPosition);
+                    const textAfter = tweetContent.value.substring(cursorPosition);
+
+                    // Vérifier si l'ajout de l'emoji ne dépasse pas la limite
+                    if (tweetContent.value.length + emoji.length <= 280) {
+                        tweetContent.value = textBefore + emoji + textAfter;
+                        tweetContent.focus();
+                        tweetContent.setSelectionRange(cursorPosition + emoji.length, cursorPosition + emoji.length);
+
+                        // Déclencher l'événement input pour mettre à jour le compteur
+                        const event = new Event('input', { bubbles: true });
+                        tweetContent.dispatchEvent(event);
+                    }
+
+                    // Fermer le sélecteur après sélection
+                    emojiPicker.classList.add('hidden');
+                });
             });
         });
     </script>
