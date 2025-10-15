@@ -307,6 +307,48 @@
             <div class="flex">
                 <!-- Timeline -->
                 <div class="flex-1 max-w-2xl border-r border-gray-800">
+                    <!-- Messages flash -->
+                    @if(flashMessages.has('success'))
+                    <div
+                        class="bg-green-500 text-white px-4 py-3 mx-4 mt-4 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span>{{ flashMessages.get('success') }}</span>
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    @endif
+
+                    @if(flashMessages.has('error'))
+                    <div class="bg-red-500 text-white px-4 py-3 mx-4 mt-4 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span>{{ flashMessages.get('error') }}</span>
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    @endif
+
                     <!-- Header avec onglets -->
                     <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur-md border-b border-gray-800 z-10">
                         <div class="flex">
@@ -323,42 +365,50 @@
 
                     <!-- Zone de composition -->
                     <div class="border-b border-gray-800 p-4">
-                        <div class="flex space-x-4">
-                            <div
-                                class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span class="text-white font-bold">{{ user.fullName ?
-                                    user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()
-                                    }}</span>
-                            </div>
-                            <div class="flex-1">
-                                <textarea
-                                    class="w-full bg-transparent text-xl placeholder-gray-500 resize-none outline-none text-white border-none"
-                                    placeholder="What's happening?" rows="3"></textarea>
+                        <form action="{{ route('tweets.store') }}" method="POST" id="tweetForm">
+                            {{ csrfField() }}
+                            <div class="flex space-x-4">
+                                <div
+                                    class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-bold">{{ user.fullName ?
+                                        user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()
+                                        }}</span>
+                                </div>
+                                <div class="flex-1">
+                                    <textarea name="content" id="tweetContent"
+                                        class="w-full bg-transparent text-xl placeholder-gray-500 resize-none outline-none text-white border-none"
+                                        placeholder="Quoi de neuf ?" rows="3" maxlength="280" required></textarea>
 
-                                <!-- Boutons d'outils -->
-                                <div class="flex items-center justify-between mt-4">
-                                    <div class="flex space-x-4 text-blue-500">
-                                        <button
-                                            class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                                <path
-                                                    d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z" />
-                                            </svg>
+                                    <div id="charCount" class="text-sm text-gray-500 text-right mt-1">0 / 280</div>
+
+                                    <!-- Boutons d'outils -->
+                                    <div class="flex items-center justify-between mt-4">
+                                        <div class="flex space-x-4 text-blue-500">
+                                            <label for="imageInput"
+                                                class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200 cursor-pointer">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z" />
+                                                </svg>
+                                                <input type="file" id="imageInput" name="image" accept="image/*"
+                                                    class="hidden">
+                                            </label>
+                                            <button type="button"
+                                                class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">📊</button>
+                                            <button type="button"
+                                                class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">😊</button>
+                                            <button type="button"
+                                                class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">📍</button>
+                                        </div>
+                                        <button type="submit" id="tweetButton"
+                                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled>
+                                            Poster
                                         </button>
-                                        <button
-                                            class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">📊</button>
-                                        <button
-                                            class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">😊</button>
-                                        <button
-                                            class="hover:bg-blue-500 hover:bg-opacity-10 p-2 rounded-full transition-all duration-200">📍</button>
                                     </div>
-                                    <button
-                                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-full transition-all duration-200">
-                                        Post
-                                    </button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
 
                     <!-- Tweet principal -->
@@ -571,6 +621,55 @@
             if (!themeButton && !selector.classList.contains('hidden')) {
                 selector.classList.add('hidden');
             }
+        });
+
+        // Gestion du formulaire de tweet
+        document.addEventListener('DOMContentLoaded', function () {
+            const tweetContent = document.getElementById('tweetContent');
+            const charCount = document.getElementById('charCount');
+            const tweetButton = document.getElementById('tweetButton');
+            const tweetForm = document.getElementById('tweetForm');
+
+            // Mise à jour du compteur de caractères
+            tweetContent.addEventListener('input', function () {
+                const currentLength = this.value.length;
+                charCount.textContent = `${currentLength} / 280`;
+
+                // Activer/désactiver le bouton selon la longueur
+                if (currentLength > 0 && currentLength <= 280) {
+                    tweetButton.disabled = false;
+                    tweetButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    tweetButton.disabled = true;
+                    tweetButton.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+
+                // Changer la couleur selon la longueur
+                if (currentLength > 260) {
+                    charCount.classList.add('text-red-500');
+                    charCount.classList.remove('text-gray-500', 'text-yellow-500');
+                } else if (currentLength > 240) {
+                    charCount.classList.add('text-yellow-500');
+                    charCount.classList.remove('text-gray-500', 'text-red-500');
+                } else {
+                    charCount.classList.add('text-gray-500');
+                    charCount.classList.remove('text-yellow-500', 'text-red-500');
+                }
+            });
+
+            // Gestion de la soumission du formulaire
+            tweetForm.addEventListener('submit', function (e) {
+                const content = tweetContent.value.trim();
+                if (!content || content.length > 280) {
+                    e.preventDefault();
+                    alert('Veuillez saisir un contenu valide (1-280 caractères)');
+                    return;
+                }
+
+                // Désactiver le bouton pour éviter les doubles soumissions
+                tweetButton.disabled = true;
+                tweetButton.textContent = 'Publication...';
+            });
         });
     </script>
 
