@@ -320,9 +320,8 @@
                                 </svg>
                             </button>
                             <div>
-                                <h1 class="text-xl font-bold">{{ user.username }}</h1>
-                                <p class="text-gray-400 text-sm">{{ user.fullName || user.username }}</p>
-                                <p class="text-gray-500 text-sm">0 posts</p>
+                                <h1 class="text-xl font-bold">Profil</h1>
+                                <p class="text-gray-500 text-sm">{{ user.tweetsCount || 0 }} posts</p>
                             </div>
                         </div>
                     </div>
@@ -384,11 +383,11 @@
                             <!-- Stats -->
                             <div class="flex space-x-6 mb-6">
                                 <div class="flex items-center space-x-1 cursor-pointer hover:underline">
-                                    <span class="font-bold text-white">42</span>
+                                    <span class="font-bold text-white">{{ user.followingCount || 0 }}</span>
                                     <span class="text-gray-500">abonnements</span>
                                 </div>
                                 <div class="flex items-center space-x-1 cursor-pointer hover:underline">
-                                    <span class="font-bold text-white">1,234</span>
+                                    <span class="font-bold text-white">{{ user.followersCount || 0 }}</span>
                                     <span class="text-gray-500">abonnés</span>
                                 </div>
                             </div>
