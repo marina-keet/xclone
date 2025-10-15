@@ -72,14 +72,31 @@ export default class AuthController {
       const cleanIdentifier = identifier.trim()
       const cleanPassword = password.trim()
 
+      console.log('🔍 Tentative de connexion avec:', cleanIdentifier)
+
+      // Vérifier si l'utilisateur existe
+      const userExists = await User.query()
+        .where('email', cleanIdentifier)
+        .orWhere('username', cleanIdentifier)
+        .first()
+
+      if (!userExists) {
+        console.log('❌ Utilisateur non trouvé:', cleanIdentifier)
+        session.flash('error', 'Utilisateur non trouvé')
+        return response.redirect().back()
+      }
+
+      console.log('✅ Utilisateur trouvé:', userExists.email, userExists.username)
+
       // Tenter la connexion avec email ou username
       const user = await User.verifyCredentials(cleanIdentifier, cleanPassword)
       await auth.use('web').login(user)
 
+      console.log('✅ Connexion réussie pour:', user.email)
       session.flash('success', 'Connexion réussie !')
       return response.redirect('/dashboard')
     } catch (error) {
-      console.error('Erreur lors de la connexion:', error)
+      console.error('❌ Erreur lors de la connexion:', error.message)
       session.flash('error', 'Identifiants incorrects')
       return response.redirect().back()
     }

@@ -6,7 +6,7 @@ export default class extends BaseSeeder {
   async run() {
     // Clear existing users
     await User.query().delete()
-    
+
     // Create test users
     const users = [
       {
@@ -47,6 +47,19 @@ export default class extends BaseSeeder {
         followersCount: 15,
         followingCount: 30,
         tweetsCount: 8,
+      },
+      {
+        email: 'marina@test.com',
+        username: 'mkeet',
+        password: await hash.make('123456'),
+        fullName: 'Marina Keet',
+        bio: 'Développeuse passionnée',
+        location: 'Paris, France',
+        website: 'https://marina-keet.com',
+        verified: true,
+        followersCount: 250,
+        followingCount: 180,
+        tweetsCount: 45,
       },
     ]
 

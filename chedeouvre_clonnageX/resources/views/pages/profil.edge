@@ -278,7 +278,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="font-bold text-white text-sm truncate">{{ user.username }}</div>
-                            <div class="text-gray-400 text-xs truncate">@{{ user.fullName }}</div>
+                            <div class="text-gray-400 text-xs truncate">{{ user.fullName || user.username }}</div>
                         </div>
                         <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path
@@ -321,7 +321,7 @@
                             </button>
                             <div>
                                 <h1 class="text-xl font-bold">{{ user.username }}</h1>
-                                <p class="text-gray-400 text-sm">@{{ user.fullName }}</p>
+                                <p class="text-gray-400 text-sm">{{ user.fullName || user.username }}</p>
                                 <p class="text-gray-500 text-sm">0 posts</p>
                             </div>
                         </div>
@@ -351,7 +351,7 @@
                                             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <p class="text-gray-400">@{{ user.fullName }}</p>
+                                    <p class="text-gray-400">{{ user.fullName || user.username }}</p>
                                 </div>
                                 <button
                                     class="border border-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-900 transition-colors font-medium">

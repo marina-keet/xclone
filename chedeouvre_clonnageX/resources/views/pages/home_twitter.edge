@@ -275,7 +275,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="font-bold text-white text-sm truncate">{{ user.username }}</div>
-                            <div class="text-gray-400 text-xs truncate">@{{ user.fullName }}</div>
+                            <div class="text-gray-400 text-xs truncate">{{ user.fullName || user.username }}</div>
                         </div>
                         <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path
