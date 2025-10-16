@@ -13,8 +13,8 @@ export default class Tweet extends BaseModel {
   @column()
   declare content: string
 
-  @column()
-  declare image: string | null
+  @column({ columnName: 'image' })
+  declare imageUrl: string | null
 
   @column()
   declare likesCount: number

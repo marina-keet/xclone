@@ -365,7 +365,8 @@
 
                     <!-- Zone de composition -->
                     <div class="border-b border-gray-800 p-4">
-                        <form action="{{ route('tweets.store') }}" method="POST" id="tweetForm">
+                        <form action="{{ route('tweets.store') }}" method="POST" id="tweetForm"
+                            enctype="multipart/form-data">
                             {{ csrfField() }}
                             <div class="flex space-x-4">
                                 <div
@@ -378,6 +379,22 @@
                                     <textarea name="content" id="tweetContent"
                                         class="w-full bg-transparent text-xl placeholder-gray-500 resize-none outline-none text-white border-none"
                                         placeholder="Quoi de neuf ?" rows="3" maxlength="280" required></textarea>
+
+                                    <!-- Prévisualisation d'image -->
+                                    <div id="imagePreview" class="hidden mt-3 mb-3">
+                                        <div class="relative">
+                                            <img id="previewImg" src="" alt="Aperçu de l'image"
+                                                class="rounded-2xl max-w-full h-auto max-h-64 border border-gray-700">
+                                            <button type="button" id="removeImage"
+                                                class="absolute top-2 right-2 bg-gray-900 bg-opacity-75 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
 
                                     <div id="charCount" class="text-sm text-gray-500 text-right mt-1">0 / 280</div>
 
@@ -982,6 +999,46 @@
                 // Désactiver le bouton pour éviter les doubles soumissions
                 tweetButton.disabled = true;
                 tweetButton.textContent = 'Publication...';
+            });
+
+            // Gestion de la prévisualisation d'image
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const removeImageBtn = document.getElementById('removeImage');
+
+            imageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Vérifier si c'est une image
+                    if (!file.type.startsWith('image/')) {
+                        alert('Veuillez sélectionner un fichier image valide.');
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    // Vérifier la taille du fichier (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('La taille de l\'image ne doit pas dépasser 5MB.');
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    // Créer l'URL de prévisualisation
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImg.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Supprimer l'image sélectionnée
+            removeImageBtn.addEventListener('click', function () {
+                imageInput.value = '';
+                imagePreview.classList.add('hidden');
+                previewImg.src = '';
             });
 
             // Gestion du sélecteur d'emojis

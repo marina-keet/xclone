@@ -11,7 +11,7 @@ export default class TweetsController {
       await auth.authenticate()
       const user = auth.getUserOrFail()
 
-      const { content, image } = request.only(['content', 'image'])
+      const { content } = request.only(['content'])
 
       // Validation basique
       if (!content || content.trim().length === 0) {
@@ -24,11 +24,47 @@ export default class TweetsController {
         return response.redirect().back()
       }
 
+      // Gérer l'upload d'image
+      let imageFileName = null
+      const image = request.file('image')
+      
+      if (image) {
+        // Vérifier que c'est bien une image
+        if (!image.isValid) {
+          session.flash('error', "Le fichier image n'est pas valide")
+          return response.redirect().back()
+        }
+
+        // Vérifier le type de fichier
+        const allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp']
+        if (!allowedTypes.includes(image.extname || '')) {
+          session.flash('error', 'Seules les images JPG, PNG, GIF et WebP sont autorisées')
+          return response.redirect().back()
+        }
+
+        // Vérifier la taille (max 5MB)
+        if (image.size > 5 * 1024 * 1024) {
+          session.flash('error', "L'image est trop volumineuse (maximum 5MB)")
+          return response.redirect().back()
+        }
+
+        // Générer un nom simple pour le fichier (comme les images de test)
+        const timestamp = Date.now()
+        imageFileName = `user_${user.id}_${timestamp}.${image.extname}`
+
+        // Déplacer le fichier vers le dossier public/uploads
+        await image.move('./public/uploads', {
+          name: imageFileName,
+        })
+
+        console.log(`✅ Image uploadée: ${imageFileName}`)
+      }
+
       // Créer le tweet
       await Tweet.create({
         userId: user.id,
         content: content.trim(),
-        image: image || null,
+        imageUrl: imageFileName,
         likesCount: 0,
         retweetsCount: 0,
         repliesCount: 0,

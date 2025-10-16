@@ -6,7 +6,7 @@ export default class extends BaseSeeder {
   async run() {
     // Trouver un utilisateur existant
     const user = await User.firstOrFail()
-    
+
     // S'assurer que l'utilisateur a un fullName
     if (!user.fullName) {
       await user.merge({ fullName: 'Lydie Martinez' }).save()
@@ -20,37 +20,44 @@ export default class extends BaseSeeder {
     await Tweet.createMany([
       {
         userId: user.id,
-        content: 'Mon premier tweet avec emoji ! 🎉✨ #test',
-        image: null,
+        content: 'hi',
+        imageUrl: null,
         likesCount: 5,
         retweetsCount: 2,
         repliesCount: 1,
       },
       {
         userId: user.id,
-        content:
-          "Un autre tweet avec du contenu plus long pour tester l'affichage. #exemple #photo",
-        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop',
+        content: 'nature et photographie 📷🌿 re',
+        imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300',
         likesCount: 12,
         retweetsCount: 3,
         repliesCount: 7,
       },
       {
         userId: user.id,
-        content: 'Tweet court 🚀',
-        image: null,
+        content: 'Tweet avec image locale �️ #local',
+        imageUrl: 'test1.jpg',
         likesCount: 8,
         retweetsCount: 1,
         repliesCount: 0,
       },
+      {
+        userId: user.id,
+        content: 'Magnifique photo',
+        imageUrl: 'test2.jpg',
+        likesCount: 25,
+        retweetsCount: 8,
+        repliesCount: 3,
+      },
     ])
 
     // Mettre à jour le compteur de tweets de l'utilisateur
-    await user.merge({ tweetsCount: (user.tweetsCount || 0) + 3 }).save()
+    await user.merge({ tweetsCount: (user.tweetsCount || 0) + 4 }).save()
 
     console.log('✅ Tweets de test créés avec succès!')
     console.log(`   - Utilisateur: ${user.username} (${user.fullName})`)
-    console.log(`   - Tweets créés: 3`)
-    console.log('   - Un tweet contient une image test')
+    console.log(`   - Tweets créés: 4`)
+    console.log('   - Deux tweets contiennent des images test')
   }
 }

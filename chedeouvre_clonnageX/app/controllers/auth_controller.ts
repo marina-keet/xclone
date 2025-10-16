@@ -125,7 +125,7 @@ export default class AuthController {
   async profile({ view, auth }: HttpContext) {
     await auth.authenticate()
     const user = auth.getUserOrFail()
-    
+
     // Récupérer les tweets de l'utilisateur
     const { default: Tweet } = await import('#models/tweet')
     const tweets = await Tweet.query()
@@ -133,17 +133,17 @@ export default class AuthController {
       .orderBy('createdAt', 'desc')
       .preload('user')
       .exec()
-    
+
     console.log(`📊 Profil de ${user.username}:`)
     console.log(`   - Nombre de tweets: ${tweets.length}`)
     if (tweets.length > 0) {
       console.log(`   - Premier tweet: "${tweets[0].content.substring(0, 50)}..."`)
-      console.log(`   - Image premier tweet: ${tweets[0].image || 'Aucune image'}`)
+      console.log(`   - Image premier tweet: ${tweets[0].imageUrl || 'affichage'}`)
       console.log(
         `   - Utilisateur du tweet: ${tweets[0].user.fullName || tweets[0].user.username}`
       )
     }
-    
+
     return view.render('pages/profil', { user, tweets })
   }
 }
