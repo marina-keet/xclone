@@ -7,11 +7,14 @@ export default class Follow extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
+  @column({ columnName: 'follower_id' })
   declare followerId: number
 
-  @column()
+  @column({ columnName: 'following_id' })
   declare followingId: number
+
+  @column()
+  declare accepted: boolean
 
   @belongsTo(() => User, { foreignKey: 'followerId' })
   declare follower: BelongsTo<typeof User>

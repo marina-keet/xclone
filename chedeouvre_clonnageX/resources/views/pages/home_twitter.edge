@@ -137,14 +137,18 @@
                         </a>
 
                         <!-- Notifications -->
-                        <a href="#"
-                            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 17h5l-5 5v-5z M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
+                        <button id="notificationsBtn"
+                            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 w-full text-left">
+                            <div class="relative">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 17h5l-5 5v-5z M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span id="notificationBadge"
+                                    class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs px-1 hidden">0</span>
+                            </div>
                             <span class="text-lg">Notifications</span>
-                        </a>
+                        </button>
 
                         <!-- Messages -->
                         <a href="#"
@@ -1002,7 +1006,35 @@
         </div>
     </div>
 
+    <!-- Modal des notifications -->
+    <div id="notificationsModal"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-gray-900 rounded-2xl p-6 max-w-md w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">Notifications</h2>
+                <div class="flex items-center space-x-2">
+                    <button id="markAllReadBtn"
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-full transition-colors">
+                        Tout marquer comme lu
+                    </button>
+                    <button id="closeNotificationsModal" class="text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="notificationsList" class="space-y-3">
+                <p class="text-gray-400 text-center">Chargement des notifications...</p>
+            </div>
+        </div>
+    </div>
+
     <script>
+        console.log('🚀 Script JavaScript chargé !');
+
         function toggleThemeSelector() {
             const selector = document.getElementById('themeSelector');
             selector.classList.toggle('hidden');
@@ -1020,10 +1052,19 @@
 
         // Gestion du formulaire de tweet
         document.addEventListener('DOMContentLoaded', function () {
+            console.log('📄 DOM chargé, initialisation des éléments...');
+
             const tweetContent = document.getElementById('tweetContent');
             const charCount = document.getElementById('charCount');
             const tweetButton = document.getElementById('tweetButton');
             const tweetForm = document.getElementById('tweetForm');
+
+            console.log('🔍 Éléments trouvés:', {
+                tweetContent: !!tweetContent,
+                charCount: !!charCount,
+                tweetButton: !!tweetButton,
+                tweetForm: !!tweetForm
+            });
 
             // Mise à jour du compteur de caractères
             tweetContent.addEventListener('input', function () {
@@ -1152,11 +1193,17 @@
 
             // Gestion des interactions avec les tweets (likes et retweets)
             // Gestion des likes
-            document.querySelectorAll('.like-btn').forEach(button => {
+            const likeButtons = document.querySelectorAll('.like-btn');
+            console.log(`💖 Boutons like trouvés: ${likeButtons.length}`);
+
+            likeButtons.forEach(button => {
                 button.addEventListener('click', async function () {
                     const tweetId = this.dataset.tweetId;
                     const heartIcon = this.querySelector('.heart-icon');
                     const likesCount = this.querySelector('.likes-count');
+
+                    console.log(`👆 Clic sur like pour tweet ${tweetId}`);
+                    console.log('Éléments trouvés:', { heartIcon: !!heartIcon, likesCount: !!likesCount });
 
                     try {
                         const response = await fetch(`/tweets/${tweetId}/like`, {
@@ -1170,18 +1217,26 @@
 
                         if (response.ok) {
                             const data = await response.json();
+                            console.log(`🎯 Réponse like tweet ${tweetId}:`, data);
 
                             // Mettre à jour l'apparence du bouton
                             if (data.status === 'liked') {
+                                console.log(`❤️ Tweet ${tweetId} liké - ajout classe rouge`);
                                 this.classList.add('text-red-500');
-                                heartIcon.setAttribute('fill', 'currentColor');
+                                if (heartIcon) heartIcon.setAttribute('fill', 'currentColor');
                             } else {
+                                console.log(`🤍 Tweet ${tweetId} unliké - retrait classe rouge`);
                                 this.classList.remove('text-red-500');
-                                heartIcon.setAttribute('fill', 'none');
+                                if (heartIcon) heartIcon.setAttribute('fill', 'none');
                             }
 
                             // Mettre à jour le compteur
-                            likesCount.textContent = data.likesCount > 0 ? data.likesCount : '';
+                            if (likesCount) {
+                                likesCount.textContent = data.likesCount > 0 ? data.likesCount : '';
+                                console.log(`📊 Compteur likes mis à jour: ${data.likesCount}`);
+                            }
+                        } else {
+                            console.error(`❌ Erreur HTTP pour tweet ${tweetId}:`, response.status);
                         }
                     } catch (error) {
                         console.error('Erreur lors du like:', error);
@@ -1241,19 +1296,31 @@
             // Initialiser l'état des boutons d'interaction au chargement
             async function initializeInteractionButtons() {
                 const likeBtns = document.querySelectorAll('.like-btn');
+                console.log(`🔄 Initialisation de ${likeBtns.length} boutons like`);
+
                 for (const button of likeBtns) {
                     const tweetId = button.dataset.tweetId;
                     if (tweetId) {
                         try {
-                            const response = await fetch(`/tweets/${tweetId}/interactions`);
+                            console.log(`📋 Chargement des interactions pour tweet ${tweetId}`);
+                            const response = await fetch(`/tweets/${tweetId}/interactions`, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                }
+                            });
                             if (response.ok) {
                                 const data = await response.json();
+                                console.log(`✅ Interactions tweet ${tweetId}:`, data);
 
                                 // Mettre à jour l'état des likes
                                 if (data.hasLiked) {
+                                    console.log(`❤️ Tweet ${tweetId} déjà liké - mise à jour du bouton`);
                                     button.classList.add('text-red-500');
                                     const heartIcon = button.querySelector('.heart-icon');
                                     if (heartIcon) heartIcon.setAttribute('fill', 'currentColor');
+                                } else {
+                                    console.log(`🤍 Tweet ${tweetId} pas encore liké`);
                                 }
 
                                 // Mettre à jour l'état des retweets
@@ -1313,6 +1380,231 @@
                     }
                 });
             });
+
+            // Gestion des notifications
+            const notificationsBtn = document.getElementById('notificationsBtn');
+            const notificationsModal = document.getElementById('notificationsModal');
+            const closeNotificationsModal = document.getElementById('closeNotificationsModal');
+            const notificationsList = document.getElementById('notificationsList');
+            const notificationBadge = document.getElementById('notificationBadge');
+
+            // Ouvrir la modal des notifications
+            notificationsBtn.addEventListener('click', async function () {
+                notificationsModal.classList.remove('hidden');
+                await loadNotifications();
+            });
+
+            // Fermer la modal
+            closeNotificationsModal.addEventListener('click', function () {
+                notificationsModal.classList.add('hidden');
+            });
+
+            // Fermer en cliquant en dehors
+            notificationsModal.addEventListener('click', function (e) {
+                if (e.target === notificationsModal) {
+                    notificationsModal.classList.add('hidden');
+                }
+            });
+
+            // Charger les notifications
+            async function loadNotifications() {
+                try {
+                    const response = await fetch('/notifications', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Données notifications reçues:', data); // Debug
+                        displayNotifications(data.notifications || []);
+                    } else {
+                        notificationsList.innerHTML = '<p class="text-red-400 text-center">Erreur lors du chargement</p>';
+                    }
+                } catch (error) {
+                    console.error('Erreur notifications:', error);
+                    notificationsList.innerHTML = '<p class="text-red-400 text-center">Erreur de connexion</p>';
+                }
+            }
+
+            // Afficher les notifications
+            function displayNotifications(notifications) {
+                if (notifications.length === 0) {
+                    notificationsList.innerHTML = '<p class="text-gray-400 text-center">Aucune notification</p>';
+                    return;
+                }
+
+                console.log('Notifications reçues:', notifications); // Debug
+
+                notificationsList.innerHTML = notifications.map(notification => `
+                    <div class="notification-item p-3 border border-gray-700 rounded-lg ${notification.isRead ? 'bg-gray-800' : 'bg-gray-700'} cursor-pointer hover:bg-gray-600 transition-colors" 
+                         data-notification-id="${notification.id}" 
+                         data-is-read="${notification.isRead}">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-bold">${notification.fromUser?.fullName?.charAt(0) || notification.fromUser?.username?.charAt(0) || '?'}</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <p class="text-white font-bold text-sm">${notification.fromUser?.fullName || notification.fromUser?.username || 'Utilisateur inconnu'}</p>
+                                    <span class="text-gray-400 text-xs">@${notification.fromUser?.username || 'inconnu'}</span>
+                                </div>
+                                <p class="text-gray-300 text-sm">${notification.message}</p>
+                                <p class="text-gray-400 text-xs mt-1">${notification.createdAt}</p>
+                                ${!notification.isRead ? '<p class="text-blue-400 text-xs mt-2 font-medium">📩 Non lu - Cliquez pour marquer comme lu</p>' : '<p class="text-gray-500 text-xs mt-2">✅ Lu</p>'}
+                            </div>
+                            ${!notification.isRead ? '<div class="w-2 h-2 bg-blue-500 rounded-full"></div>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                // Ajouter les gestionnaires de clic pour marquer comme lu
+                document.querySelectorAll('.notification-item').forEach(item => {
+                    item.addEventListener('click', async function () {
+                        const notificationId = this.dataset.notificationId;
+                        const isRead = this.dataset.isRead === 'true';
+
+                        if (!isRead) {
+                            await markNotificationAsRead(notificationId, this);
+                        }
+                    });
+                });
+
+                // Mettre à jour le badge
+                const unreadCount = notifications.filter(n => !n.isRead).length;
+                if (unreadCount > 0) {
+                    notificationBadge.textContent = unreadCount;
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
+            }
+
+            // Marquer une notification comme lue
+            async function markNotificationAsRead(notificationId, notificationElement) {
+                try {
+                    console.log(`📖 Marquage notification ${notificationId} comme lue`);
+
+                    const response = await fetch(`/notifications/${notificationId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        }
+                    });
+
+                    if (response.ok) {
+                        console.log(`✅ Notification ${notificationId} marquée comme lue`);
+
+                        // Mettre à jour visuellement la notification
+                        notificationElement.classList.remove('bg-gray-700');
+                        notificationElement.classList.add('bg-gray-800');
+                        notificationElement.dataset.isRead = 'true';
+
+                        // Supprimer le point bleu et le texte "Non lu"
+                        const blueDot = notificationElement.querySelector('.bg-blue-500');
+                        if (blueDot) blueDot.remove();
+
+                        const unreadText = notificationElement.querySelector('.text-blue-400');
+                        if (unreadText) {
+                            unreadText.className = 'text-gray-500 text-xs mt-2';
+                            unreadText.textContent = '✅ Lu';
+                        }
+
+                        // Mettre à jour le badge de notifications
+                        updateNotificationBadge();
+
+                    } else {
+                        console.error(`❌ Erreur lors du marquage de la notification ${notificationId}`);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du marquage comme lu:', error);
+                }
+            }
+
+            // Mettre à jour le badge de notifications
+            function updateNotificationBadge() {
+                const unreadNotifications = document.querySelectorAll('.notification-item[data-is-read="false"]');
+                const unreadCount = unreadNotifications.length;
+
+                if (unreadCount > 0) {
+                    notificationBadge.textContent = unreadCount;
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
+            }
+
+            // Marquer toutes les notifications comme lues
+            async function markAllNotificationsAsRead() {
+                try {
+                    console.log('📖 Marquage de toutes les notifications comme lues');
+
+                    const response = await fetch('/notifications/mark-all-read', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        }
+                    });
+
+                    if (response.ok) {
+                        console.log('✅ Toutes les notifications marquées comme lues');
+
+                        // Mettre à jour visuellement toutes les notifications
+                        const unreadNotifications = document.querySelectorAll('.notification-item[data-is-read="false"]');
+                        unreadNotifications.forEach(notification => {
+                            notification.classList.remove('bg-gray-700');
+                            notification.classList.add('bg-gray-800');
+                            notification.dataset.isRead = 'true';
+
+                            // Supprimer le point bleu
+                            const blueDot = notification.querySelector('.bg-blue-500');
+                            if (blueDot) blueDot.remove();
+
+                            // Mettre à jour le texte de statut
+                            const unreadText = notification.querySelector('.text-blue-400');
+                            if (unreadText) {
+                                unreadText.className = 'text-gray-500 text-xs mt-2';
+                                unreadText.textContent = '✅ Lu';
+                            }
+                        });
+
+                        // Mettre à jour le badge (doit être 0)
+                        updateNotificationBadge();
+
+                        // Afficher un message de succès
+                        const successMsg = document.createElement('div');
+                        successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow z-50';
+                        successMsg.textContent = 'Toutes les notifications marquées comme lues';
+                        document.body.appendChild(successMsg);
+
+                        setTimeout(() => successMsg.remove(), 3000);
+
+                    } else {
+                        console.error('❌ Erreur lors du marquage de toutes les notifications');
+                        alert('Erreur lors du marquage des notifications');
+                    }
+                } catch (error) {
+                    console.error('🚨 Erreur lors du marquage de toutes les notifications:', error);
+                    alert('Erreur lors du marquage des notifications');
+                }
+            }
+
+            // Gestionnaire pour le bouton "Tout marquer comme lu"
+            document.addEventListener('click', function (e) {
+                if (e.target.id === 'markAllReadBtn') {
+                    e.preventDefault();
+                    markAllNotificationsAsRead();
+                }
+            });
+
+            // Charger les notifications au démarrage pour le badge
+            loadNotifications();
         });
     </script>
 

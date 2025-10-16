@@ -7,16 +7,16 @@ export default class Notification extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
+  @column({ columnName: 'user_id' })
   declare userId: number // Utilisateur qui reçoit la notification
 
-  @column()
+  @column({ columnName: 'from_user_id' })
   declare fromUserId: number // Utilisateur qui déclenche la notification
 
   @column()
   declare type: string // 'follow', 'like', 'retweet', 'mention', etc.
 
-  @column()
+  @column({ columnName: 'tweet_id' })
   declare tweetId: number | null // Tweet concerné (si applicable)
 
   @column()

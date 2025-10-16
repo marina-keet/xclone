@@ -42,25 +42,35 @@ export default class FollowsController {
         })
       } else {
         // Follow
-        await Follow.create({
+        console.log(`👤 Tentative de suivi: ${currentUser.username} -> ${targetUser.username}`)
+
+        const newFollow = await Follow.create({
           followerId: currentUser.id,
           followingId: targetUserId,
+          accepted: true,
         })
+        console.log(`✅ Follow créé:`, newFollow.toJSON())
 
         // Mettre à jour les compteurs
         currentUser.followingCount = currentUser.followingCount + 1
         targetUser.followersCount = targetUser.followersCount + 1
         await currentUser.save()
         await targetUser.save()
+        console.log(
+          `📊 Compteurs mis à jour: ${currentUser.username} suit ${currentUser.followingCount}, ${targetUser.username} a ${targetUser.followersCount} followers`
+        )
 
         // Créer une notification pour l'utilisateur suivi
-        await Notification.create({
+        console.log(`🔔 Création de notification pour ${targetUser.username}`)
+        const notification = await Notification.create({
           userId: targetUserId,
           fromUserId: currentUser.id,
           type: 'follow',
+          tweetId: null,
           message: `@${currentUser.username} s'est abonné à vous`,
           isRead: false,
         })
+        console.log(`✅ Notification créée:`, notification.toJSON())
 
         console.log(`✅ ${currentUser.username} suit maintenant ${targetUser.username}`)
         console.log(`📧 Notification envoyée à ${targetUser.username}`)
@@ -89,7 +99,32 @@ export default class FollowsController {
         .orderBy('created_at', 'desc')
         .limit(20)
 
-      return response.json({ notifications })
+      // Formater les notifications pour s'assurer que fromUser est inclus
+      const formattedNotifications = notifications.map((notification) => ({
+        id: notification.id,
+        type: notification.type,
+        message: notification.message,
+        isRead: notification.isRead,
+        createdAt: notification.createdAt.toFormat('dd/MM/yyyy HH:mm'),
+        fromUser: notification.fromUser
+          ? {
+              id: notification.fromUser.id,
+              username: notification.fromUser.username,
+              fullName: notification.fromUser.fullName,
+            }
+          : null,
+      }))
+
+      console.log(
+        `📧 Notifications récupérées pour ${user.username}:`,
+        formattedNotifications.length
+      )
+      if (formattedNotifications.length > 0) {
+        console.log(`   - Première notification: ${formattedNotifications[0].message}`)
+        console.log(`   - De: ${formattedNotifications[0].fromUser?.username || 'Unknown'}`)
+      }
+
+      return response.json({ notifications: formattedNotifications })
     } catch (error) {
       console.error('Erreur lors de la récupération des notifications:', error)
       return response.status(500).json({ error: 'Erreur serveur' })
@@ -115,6 +150,28 @@ export default class FollowsController {
       return response.json({ success: true })
     } catch (error) {
       console.error('Erreur lors du marquage de la notification:', error)
+      return response.status(500).json({ error: 'Erreur serveur' })
+    }
+  }
+
+  /**
+   * Marquer toutes les notifications comme lues
+   */
+  async markAllAsRead({ auth, response }: HttpContext) {
+    try {
+      const user = await auth.authenticate()
+
+      await Notification.query()
+        .where('user_id', user.id)
+        .where('is_read', false)
+        .update({ is_read: true })
+
+      return response.json({
+        success: true,
+        message: 'Toutes les notifications marquées comme lues',
+      })
+    } catch (error) {
+      console.error('Erreur lors du marquage de toutes les notifications:', error)
       return response.status(500).json({ error: 'Erreur serveur' })
     }
   }

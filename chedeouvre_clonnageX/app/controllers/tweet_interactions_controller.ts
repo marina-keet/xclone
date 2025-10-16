@@ -48,7 +48,10 @@ export default class TweetInteractionsController {
 
         // Créer une notification pour l'auteur du tweet (sauf si c'est son propre tweet)
         if (tweet.userId !== user.id) {
-          await Notification.create({
+          console.log(
+            `🔔 Création de notification like: ${user.username} -> ${tweet.user.username}`
+          )
+          const likeNotification = await Notification.create({
             userId: tweet.userId,
             fromUserId: user.id,
             type: 'like',
@@ -56,8 +59,10 @@ export default class TweetInteractionsController {
             message: `@${user.username} a aimé votre tweet`,
             isRead: false,
           })
-
+          console.log(`✅ Notification like créée:`, likeNotification.toJSON())
           console.log(`❤️ ${user.username} a liké le tweet de ${tweet.user.username}`)
+        } else {
+          console.log(`👤 ${user.username} a liké son propre tweet - pas de notification`)
         }
 
         return response.json({
