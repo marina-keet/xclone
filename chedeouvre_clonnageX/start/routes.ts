@@ -14,6 +14,7 @@ const TweetsController = () => import('#controllers/tweets_controller')
 const TweetInteractionsController = () => import('#controllers/tweet_interactions_controller')
 const FollowsController = () => import('#controllers/follows_controller')
 const ProfilesController = () => import('#controllers/profiles_controller')
+const RepliesController = () => import('#controllers/replies_controller')
 
 // Route pour servir les fichiers uploadés
 router.get('/uploads/*', ({ response, request }) => {
@@ -47,6 +48,10 @@ router
 router
   .get('/tweets/:id/interactions', [TweetInteractionsController, 'getInteractions'])
   .as('tweets.interactions')
+
+// Routes pour les réponses
+router.post('/tweets/:id/replies', [RepliesController, 'store']).as('replies.store')
+router.get('/tweets/:id/replies', [RepliesController, 'getReplies']).as('replies.get')
 
 // Routes pour le suivi
 router.post('/users/:id/follow', [FollowsController, 'toggle']).as('users.follow')

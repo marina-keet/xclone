@@ -4,6 +4,7 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import User from './user.js'
 import Like from './like.js'
 import Retweet from './retweet.js'
+import Reply from './reply.js'
 
 export default class Tweet extends BaseModel {
   @column({ isPrimary: true })
@@ -35,6 +36,9 @@ export default class Tweet extends BaseModel {
 
   @hasMany(() => Retweet)
   declare retweets: HasMany<typeof Retweet>
+
+  @hasMany(() => Reply)
+  declare replies: HasMany<typeof Reply>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

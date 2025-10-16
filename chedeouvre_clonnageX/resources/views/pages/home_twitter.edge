@@ -273,10 +273,15 @@
                     <div
                         class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 cursor-pointer transition-all duration-200 mb-2">
                         <div
-                            class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                            class="w-8 h-8 {{ user.avatar ? '' : 'bg-gradient-to-r from-pink-500 to-purple-600' }} rounded-full flex items-center justify-center">
+                            @if(user.avatar)
+                            <img src="{{ user.avatar }}" alt="Avatar de {{ user.username }}"
+                                class="w-full h-full rounded-full object-cover">
+                            @else
                             <span class="text-white font-bold text-xs">{{ user.fullName ?
                                 user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()
                                 }}</span>
+                            @endif
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="font-bold text-white text-sm truncate">{{ user.username }}</div>
@@ -375,10 +380,15 @@
                             {{ csrfField() }}
                             <div class="flex space-x-4">
                                 <div
-                                    class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    class="w-12 h-12 {{ user.avatar ? '' : 'bg-gradient-to-r from-pink-500 to-purple-600' }} rounded-full flex items-center justify-center flex-shrink-0">
+                                    @if(user.avatar)
+                                    <img src="{{ user.avatar }}" alt="Avatar de {{ user.username }}"
+                                        class="w-full h-full rounded-full object-cover">
+                                    @else
                                     <span class="text-white font-bold">{{ user.fullName ?
                                         user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()
                                         }}</span>
+                                    @endif
                                 </div>
                                 <div class="flex-1">
                                     <textarea name="content" id="tweetContent"
@@ -754,11 +764,16 @@
                         <div class="flex space-x-3">
                             <!-- Avatar de l'utilisateur -->
                             <div
-                                class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-gray-600">
+                                class="w-12 h-12 {{ tweet.user.avatar ? '' : 'bg-gradient-to-r from-blue-500 to-purple-600' }} rounded-full flex items-center justify-center flex-shrink-0 border-2 border-gray-600">
+                                @if(tweet.user.avatar)
+                                <img src="{{ tweet.user.avatar }}" alt="Avatar de {{ tweet.user.username }}"
+                                    class="w-full h-full rounded-full object-cover">
+                                @else
                                 <span class="text-white font-bold text-lg">
                                     {{ tweet.user.fullName ? tweet.user.fullName.charAt(0).toUpperCase() :
                                     tweet.user.username.charAt(0).toUpperCase() }}
                                 </span>
+                                @endif
                             </div>
 
                             <div class="flex-1">
@@ -805,7 +820,8 @@
                                 <div class="flex items-center justify-between max-w-md text-gray-500">
                                     <!-- Répondre -->
                                     <button
-                                        class="flex items-center space-x-2 hover:text-blue-500 transition-colors group">
+                                        class="reply-btn flex items-center space-x-2 hover:text-blue-500 transition-colors group"
+                                        data-tweet-id="{{ tweet.id }}">
                                         <div
                                             class="p-2 rounded-full group-hover:bg-blue-500 group-hover:bg-opacity-10 transition-all">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -936,11 +952,17 @@
                             <div class="flex items-center justify-between hover:bg-gray-800 p-2 rounded transition-all">
                                 <div class="flex items-center space-x-3">
                                     <div
-                                        class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center border border-gray-600">
+                                        class="w-10 h-10 {{ suggestedUser.avatar ? '' : 'bg-gradient-to-r from-blue-500 to-purple-600' }} rounded-full flex items-center justify-center border border-gray-600">
+                                        @if(suggestedUser.avatar)
+                                        <img src="{{ suggestedUser.avatar }}"
+                                            alt="Avatar de {{ suggestedUser.username }}"
+                                            class="w-full h-full rounded-full object-cover">
+                                        @else
                                         <span class="text-white font-bold text-sm">
                                             {{ suggestedUser.fullName ? suggestedUser.fullName.charAt(0).toUpperCase() :
                                             suggestedUser.username.charAt(0).toUpperCase() }}
                                         </span>
+                                        @endif
                                     </div>
                                     <div>
                                         <div class="flex items-center space-x-1">
@@ -1605,6 +1627,215 @@
 
             // Charger les notifications au démarrage pour le badge
             loadNotifications();
+
+            // ==========================================================
+            // GESTION DES RÉPONSES / COMMENTAIRES
+            // ==========================================================
+
+            // Gestionnaire pour les boutons de réponse
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('.reply-btn')) {
+                    e.preventDefault();
+                    const btn = e.target.closest('.reply-btn');
+                    const tweetId = btn.dataset.tweetId;
+                    showReplyModal(tweetId);
+                }
+            });
+
+            // Afficher le modal de réponse
+            function showReplyModal(tweetId) {
+                // Créer le modal s'il n'existe pas
+                let modal = document.getElementById('replyModal');
+                if (!modal) {
+                    modal = createReplyModal();
+                    document.body.appendChild(modal);
+                }
+
+                // Stocker l'ID du tweet dans le modal
+                modal.dataset.tweetId = tweetId;
+
+                // Réinitialiser le formulaire
+                const textarea = modal.querySelector('#replyContent');
+                const imageInput = modal.querySelector('#replyImage');
+                textarea.value = '';
+                imageInput.value = '';
+
+                // Afficher le modal
+                modal.classList.remove('hidden');
+                textarea.focus();
+            }
+
+            // Créer le modal de réponse
+            function createReplyModal() {
+                const modalHTML = `
+                    <div id="replyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                        <div class="bg-gray-900 rounded-lg p-6 w-full max-w-lg mx-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-white">Répondre au tweet</h3>
+                                <button id="closeReplyModal" class="text-gray-400 hover:text-white">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <form id="replyForm">
+                                <textarea 
+                                    id="replyContent" 
+                                    placeholder="Écrivez votre réponse..." 
+                                    class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    rows="4"
+                                    maxlength="280"
+                                    required></textarea>
+                                
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center space-x-4">
+                                        <label for="replyImage" class="cursor-pointer text-blue-400 hover:text-blue-300">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </label>
+                                        <input type="file" id="replyImage" accept="image/*" class="hidden">
+                                        <div id="replyCharCount" class="text-sm text-gray-400">0/280</div>
+                                    </div>
+                                    
+                                    <div class="flex space-x-3">
+                                        <button type="button" id="cancelReply" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
+                                            Annuler
+                                        </button>
+                                        <button type="submit" id="submitReply" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                            Répondre
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                `;
+
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = modalHTML;
+                const modal = wrapper.firstElementChild;
+
+                // Gestionnaires d'événements pour le modal
+                setupReplyModalEvents(modal);
+
+                return modal;
+            }
+
+            // Configuration des événements du modal de réponse
+            function setupReplyModalEvents(modal) {
+                const closeBtn = modal.querySelector('#closeReplyModal');
+                const cancelBtn = modal.querySelector('#cancelReply');
+                const form = modal.querySelector('#replyForm');
+                const textarea = modal.querySelector('#replyContent');
+                const charCount = modal.querySelector('#replyCharCount');
+
+                // Fermer le modal
+                closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+                cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+                // Fermer en cliquant à l'extérieur
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.classList.add('hidden');
+                });
+
+                // Compteur de caractères
+                textarea.addEventListener('input', () => {
+                    const count = textarea.value.length;
+                    charCount.textContent = `${count}/280`;
+                    charCount.classList.toggle('text-red-400', count > 280);
+                });
+
+                // Soumettre la réponse
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await submitReply(modal);
+                });
+            }
+
+            // Soumettre la réponse
+            async function submitReply(modal) {
+                const tweetId = modal.dataset.tweetId;
+                const content = modal.querySelector('#replyContent').value.trim();
+                const imageInput = modal.querySelector('#replyImage');
+                const submitBtn = modal.querySelector('#submitReply');
+
+                if (!content) return;
+
+                // Désactiver le bouton pendant l'envoi
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Envoi...';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('content', content);
+                    formData.append('tweet_id', tweetId);
+
+                    if (imageInput.files[0]) {
+                        formData.append('image', imageInput.files[0]);
+                    }
+
+                    const response = await fetch(`/tweets/${tweetId}/replies`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        // Fermer le modal
+                        modal.classList.add('hidden');
+
+                        // Incrémenter le compteur de réponses
+                        updateRepliesCount(tweetId, 1);
+
+                        // Afficher un message de succès
+                        showSuccessMessage('Réponse publiée avec succès !');
+
+                    } else {
+                        throw new Error(result.message || 'Erreur lors de la publication');
+                    }
+
+                } catch (error) {
+                    console.error('Erreur lors de la publication de la réponse:', error);
+                    alert('Erreur lors de la publication de la réponse');
+                } finally {
+                    // Réactiver le bouton
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Répondre';
+                }
+            }
+
+            // Mettre à jour le compteur de réponses
+            function updateRepliesCount(tweetId, increment) {
+                const replyBtns = document.querySelectorAll(`.reply-btn[data-tweet-id="${tweetId}"]`);
+                replyBtns.forEach(btn => {
+                    const countSpan = btn.querySelector('.replies-count');
+                    if (countSpan) {
+                        const currentCount = parseInt(countSpan.textContent) || 0;
+                        const newCount = currentCount + increment;
+                        countSpan.textContent = newCount > 0 ? newCount : '';
+                    }
+                });
+            }
+
+            // Afficher un message de succès
+            function showSuccessMessage(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                successDiv.textContent = message;
+                document.body.appendChild(successDiv);
+
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 3000);
+            }
+
         });
     </script>
 

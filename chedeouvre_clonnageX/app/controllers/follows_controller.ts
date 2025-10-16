@@ -163,8 +163,8 @@ export default class FollowsController {
 
       await Notification.query()
         .where('user_id', user.id)
-        .where('is_read', false)
-        .update({ is_read: true })
+        .where('read', false)
+        .update({ read: true })
 
       return response.json({
         success: true,
