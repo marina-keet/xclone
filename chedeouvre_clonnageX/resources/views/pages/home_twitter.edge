@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrfToken }}">
     <title>X</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -741,89 +742,137 @@
                         </form>
                     </div>
 
-                    <!-- Tweet principal -->
+                    <!-- Feed de tweets -->
+                    @if(tweets && tweets.length > 0)
+                    @each(tweet in tweets)
                     <article
                         class="p-4 hover:bg-gray-950 hover:bg-opacity-50 transition-all duration-200 border-b border-gray-800">
                         <div class="flex space-x-3">
-                            <img src="https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_400x400.jpg"
-                                alt="Donald J. Trump" class="w-12 h-12 rounded-full flex-shrink-0">
+                            <!-- Avatar de l'utilisateur -->
+                            <div
+                                class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-gray-600">
+                                <span class="text-white font-bold text-lg">
+                                    {{ tweet.user.fullName ? tweet.user.fullName.charAt(0).toUpperCase() :
+                                    tweet.user.username.charAt(0).toUpperCase() }}
+                                </span>
+                            </div>
 
                             <div class="flex-1">
+                                <!-- Informations de l'utilisateur -->
                                 <div class="flex items-center space-x-2 mb-2">
-                                    <h3 class="font-bold text-white">Donald J. Trump</h3>
+                                    <h3 class="font-bold text-white">
+                                        {{ tweet.user.fullName || tweet.user.username }}
+                                    </h3>
+                                    @if(tweet.user.verified)
                                     <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
                                         <path
                                             d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
-                                    <span class="text-gray-500">@realDonaldTrump</span>
+                                    @endif
+                                    <span class="text-gray-500">@{{ tweet.user.username }}</span>
                                     <span class="text-gray-500">·</span>
-                                    <span class="text-gray-500">3h</span>
+                                    <span class="text-gray-500">{{ tweet.createdAt.toFormat('dd/MM/yyyy HH:mm')
+                                        }}</span>
                                 </div>
 
-                                <p class="text-white text-base mb-3 leading-relaxed">
-                                    Don't forget to get a copy of my son Eric's book, "UNDER SIEGE," which is
-                                    breaking records everywhere. It's a phenomenal book, that's a must read
-                                    for everyone—Congratulations Eric, you deserve it!!!
-                                    <span class="text-blue-500">a.co/d/7oPyLF5</span>
-                                </p>
-
-                                <!-- Image -->
-                                <div class="rounded-2xl overflow-hidden mb-4 bg-gray-800">
-                                    <div class="aspect-video flex items-center justify-center text-gray-400">
-                                        [Image: Under Siege Book]
-                                    </div>
+                                <!-- Contenu du tweet -->
+                                <div class="text-white text-base leading-relaxed mb-3">
+                                    {{ tweet.content }}
                                 </div>
 
-                                <!-- Actions -->
+                                <!-- Image du tweet (si présente) -->
+                                @if(tweet.imageUrl && tweet.imageUrl.trim() !== '')
+                                <div class="mb-3">
+                                    @if(tweet.imageUrl.startsWith('http'))
+                                    <!-- Image externe (URL complète) -->
+                                    <img src="{{ tweet.imageUrl }}" alt="Image du tweet"
+                                        class="rounded-2xl max-w-full h-auto border border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+                                        onerror="this.style.display='none';">
+                                    @else
+                                    <!-- Image locale stockée -->
+                                    <img src="/uploads/{{ tweet.imageUrl }}" alt="Image du tweet"
+                                        class="rounded-2xl max-w-full h-auto border border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+                                        onerror="this.style.display='none';">
+                                    @endif
+                                </div>
+                                @endif
+
+                                <!-- Actions du tweet -->
                                 <div class="flex items-center justify-between max-w-md text-gray-500">
+                                    <!-- Répondre -->
                                     <button
-                                        class="flex items-center space-x-2 hover:text-blue-500 group transition-colors">
+                                        class="flex items-center space-x-2 hover:text-blue-500 transition-colors group">
                                         <div
                                             class="p-2 rounded-full group-hover:bg-blue-500 group-hover:bg-opacity-10 transition-all">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                                                </path>
                                             </svg>
                                         </div>
-                                        <span class="text-sm">10K</span>
+                                        <span class="replies-count text-sm">{{ tweet.repliesCount > 0 ?
+                                            tweet.repliesCount : '' }}</span>
                                     </button>
 
+                                    <!-- Retweet -->
                                     <button
-                                        class="flex items-center space-x-2 hover:text-green-500 group transition-colors">
+                                        class="retweet-btn flex items-center space-x-2 hover:text-green-500 transition-colors group"
+                                        data-tweet-id="{{ tweet.id }}">
                                         <div
                                             class="p-2 rounded-full group-hover:bg-green-500 group-hover:bg-opacity-10 transition-all">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                                </path>
                                             </svg>
                                         </div>
-                                        <span class="text-sm">20K</span>
+                                        <span class="retweets-count text-sm">{{ tweet.retweetsCount > 0 ?
+                                            tweet.retweetsCount : '' }}</span>
                                     </button>
 
+                                    <!-- Like -->
                                     <button
-                                        class="flex items-center space-x-2 hover:text-red-500 group transition-colors">
+                                        class="like-btn flex items-center space-x-2 hover:text-red-500 transition-colors group"
+                                        data-tweet-id="{{ tweet.id }}">
                                         <div
                                             class="p-2 rounded-full group-hover:bg-red-500 group-hover:bg-opacity-10 transition-all">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-5 h-5 heart-icon" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
                                             </svg>
                                         </div>
-                                        <span class="text-sm">131K</span>
+                                        <span class="likes-count text-sm">{{ tweet.likesCount > 0 ? tweet.likesCount :
+                                            '' }}</span>
                                     </button>
 
+                                    <!-- Partager -->
                                     <button
-                                        class="flex items-center space-x-2 hover:text-blue-500 group transition-colors">
+                                        class="flex items-center space-x-2 hover:text-blue-500 transition-colors group">
                                         <div
                                             class="p-2 rounded-full group-hover:bg-blue-500 group-hover:bg-opacity-10 transition-all">
-                                            📤
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z">
+                                                </path>
+                                            </svg>
                                         </div>
-                                        <span class="text-sm">6.1M</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </article>
+                    @endeach
+                    @else
+                    <!-- Message si pas de tweets -->
+                    <div class="text-center py-16">
+                        <div class="text-gray-500 text-6xl mb-4">🐦</div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Bienvenue sur X !</h2>
+                        <p class="text-gray-500 mb-6">Quand des utilisateurs posteront des tweets, ils apparaîtront ici.
+                        </p>
+                    </div>
+                    @endif
                 </div>
 
                 <!-- Sidebar droite -->
@@ -875,32 +924,48 @@
                     </div>
 
                     <!-- Who to follow -->
+                    @if(suggestedUsers && suggestedUsers.length > 0)
                     <div class="bg-gray-900 rounded-2xl p-4">
-                        <h2 class="text-xl font-bold text-white mb-4">Who to follow</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <div
-                                    class="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center">
-                                    <span class="text-white font-bold text-sm">IM</span>
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-1">
-                                        <span class="font-bold text-white">Israël Mutombo</span>
-                                        <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                        </svg>
+                        <h2 class="text-xl font-bold text-white mb-4">Suggestions pour vous</h2>
+                        <div class="space-y-3">
+                            @each(suggestedUser in suggestedUsers)
+                            <div class="flex items-center justify-between hover:bg-gray-800 p-2 rounded transition-all">
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center border border-gray-600">
+                                        <span class="text-white font-bold text-sm">
+                                            {{ suggestedUser.fullName ? suggestedUser.fullName.charAt(0).toUpperCase() :
+                                            suggestedUser.username.charAt(0).toUpperCase() }}
+                                        </span>
                                     </div>
-                                    <div class="text-gray-500 text-sm">@IsralMutombo11</div>
+                                    <div>
+                                        <div class="flex items-center space-x-1">
+                                            <span class="font-bold text-white text-sm">{{ suggestedUser.fullName ||
+                                                suggestedUser.username }}</span>
+                                            @if(suggestedUser.verified)
+                                            <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                            </svg>
+                                            @endif
+                                        </div>
+                                        <div class="text-gray-500 text-xs">@{{ suggestedUser.username }}</div>
+                                        @if(suggestedUser.tweetsCount > 0)
+                                        <div class="text-gray-500 text-xs">{{ suggestedUser.tweetsCount }} tweets</div>
+                                        @endif
+                                    </div>
                                 </div>
+                                <button
+                                    class="follow-btn bg-white hover:bg-gray-200 text-black font-bold py-1 px-4 rounded-full text-sm transition-all"
+                                    data-user-id="{{ suggestedUser.id }}">
+                                    Suivre
+                                </button>
                             </div>
-                            <button
-                                class="bg-white hover:bg-gray-200 text-black font-bold py-1 px-4 rounded-full text-sm transition-all">
-                                Follow
-                            </button>
+                            @endeach
                         </div>
-                        <button class="text-blue-500 hover:underline text-sm mt-3">Show more</button>
+                        <button class="text-blue-500 hover:underline text-sm mt-3">Voir plus</button>
                     </div>
+                    @endif
 
                     <!-- Footer -->
                     <div class="bg-gray-900 rounded-2xl p-4 mt-4">
@@ -1082,6 +1147,170 @@
 
                     // Fermer le sélecteur après sélection
                     emojiPicker.classList.add('hidden');
+                });
+            });
+
+            // Gestion des interactions avec les tweets (likes et retweets)
+            // Gestion des likes
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const tweetId = this.dataset.tweetId;
+                    const heartIcon = this.querySelector('.heart-icon');
+                    const likesCount = this.querySelector('.likes-count');
+
+                    try {
+                        const response = await fetch(`/tweets/${tweetId}/like`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            }
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+
+                            // Mettre à jour l'apparence du bouton
+                            if (data.status === 'liked') {
+                                this.classList.add('text-red-500');
+                                heartIcon.setAttribute('fill', 'currentColor');
+                            } else {
+                                this.classList.remove('text-red-500');
+                                heartIcon.setAttribute('fill', 'none');
+                            }
+
+                            // Mettre à jour le compteur
+                            likesCount.textContent = data.likesCount > 0 ? data.likesCount : '';
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors du like:', error);
+                    }
+                });
+            });
+
+            // Gestion des retweets
+            document.querySelectorAll('.retweet-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const tweetId = this.dataset.tweetId;
+                    const retweetsCount = this.querySelector('.retweets-count');
+
+                    // Demander confirmation et optionnellement un commentaire
+                    const comment = prompt('Voulez-vous ajouter un commentaire à ce retweet ? (Optionnel)');
+
+                    if (comment === null) {
+                        return; // L'utilisateur a annulé
+                    }
+
+                    try {
+                        const response = await fetch(`/tweets/${tweetId}/retweet`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            },
+                            body: JSON.stringify({
+                                comment: comment.trim() || null
+                            })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+
+                            // Mettre à jour l'apparence du bouton
+                            this.classList.add('text-green-500');
+
+                            // Mettre à jour le compteur
+                            retweetsCount.textContent = data.retweetsCount > 0 ? data.retweetsCount : '';
+
+                            // Désactiver le bouton pour éviter les doublons
+                            this.disabled = true;
+                            this.style.opacity = '0.5';
+                        } else {
+                            const error = await response.json();
+                            alert(error.error || 'Erreur lors du retweet');
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors du retweet:', error);
+                        alert('Erreur lors du retweet');
+                    }
+                });
+            });
+
+            // Initialiser l'état des boutons d'interaction au chargement
+            async function initializeInteractionButtons() {
+                const likeBtns = document.querySelectorAll('.like-btn');
+                for (const button of likeBtns) {
+                    const tweetId = button.dataset.tweetId;
+                    if (tweetId) {
+                        try {
+                            const response = await fetch(`/tweets/${tweetId}/interactions`);
+                            if (response.ok) {
+                                const data = await response.json();
+
+                                // Mettre à jour l'état des likes
+                                if (data.hasLiked) {
+                                    button.classList.add('text-red-500');
+                                    const heartIcon = button.querySelector('.heart-icon');
+                                    if (heartIcon) heartIcon.setAttribute('fill', 'currentColor');
+                                }
+
+                                // Mettre à jour l'état des retweets
+                                const retweetBtn = button.parentElement.querySelector('.retweet-btn');
+                                if (retweetBtn && data.hasRetweeted) {
+                                    retweetBtn.classList.add('text-green-500');
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Erreur lors de l\'initialisation des interactions:', error);
+                        }
+                    }
+                }
+            }
+
+            // Appeler l'initialisation après un court délai pour s'assurer que le DOM est prêt
+            setTimeout(initializeInteractionButtons, 100);
+
+            // Gestion des boutons de suivi
+            document.querySelectorAll('.follow-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const userId = this.dataset.userId;
+
+                    try {
+                        const response = await fetch(`/users/${userId}/follow`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            }
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+
+                            // Mettre à jour le bouton selon le statut
+                            if (data.status === 'followed') {
+                                this.textContent = 'Suivi(e)';
+                                this.classList.remove('bg-white', 'hover:bg-gray-200', 'text-black');
+                                this.classList.add('bg-gray-600', 'text-white');
+                            } else if (data.status === 'unfollowed') {
+                                this.textContent = 'Suivre';
+                                this.classList.remove('bg-gray-600', 'text-white');
+                                this.classList.add('bg-white', 'hover:bg-gray-200', 'text-black');
+                            }
+
+                            // Afficher un message de succès
+                            console.log(data.message);
+                        } else {
+                            const error = await response.json();
+                            alert(error.error || 'Erreur lors du suivi');
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors du suivi:', error);
+                        alert('Erreur lors du suivi');
+                    }
                 });
             });
         });

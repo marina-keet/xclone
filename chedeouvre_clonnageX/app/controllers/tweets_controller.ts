@@ -27,7 +27,7 @@ export default class TweetsController {
       // Gérer l'upload d'image
       let imageFileName = null
       const image = request.file('image')
-      
+
       if (image) {
         // Vérifier que c'est bien une image
         if (!image.isValid) {

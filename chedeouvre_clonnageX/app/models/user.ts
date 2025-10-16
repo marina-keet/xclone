@@ -1,8 +1,12 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
+import Tweet from './tweet.js'
+import Like from './like.js'
+import Retweet from './retweet.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email', 'username'],
@@ -54,6 +58,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column()
   declare tweetsCount: number
+
+  @hasMany(() => Tweet)
+  declare tweets: HasMany<typeof Tweet>
+
+  @hasMany(() => Like)
+  declare likes: HasMany<typeof Like>
+
+  @hasMany(() => Retweet)
+  declare retweets: HasMany<typeof Retweet>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

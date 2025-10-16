@@ -10,6 +10,8 @@
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 const TweetsController = () => import('#controllers/tweets_controller')
+const TweetInteractionsController = () => import('#controllers/tweet_interactions_controller')
+const FollowsController = () => import('#controllers/follows_controller')
 
 // Page d'accueil (connexion/inscription)
 router.get('/', [AuthController, 'showHome'])
@@ -27,6 +29,23 @@ router.get('/profile', [AuthController, 'profile']).as('profile')
 router.post('/tweets', [TweetsController, 'store']).as('tweets.store')
 router.get('/tweets/user/:id', [TweetsController, 'getUserTweets']).as('tweets.user')
 router.get('/feed', [TweetsController, 'getFeed']).as('tweets.feed')
+
+// Routes pour les interactions des tweets
+router.post('/tweets/:id/like', [TweetInteractionsController, 'toggleLike']).as('tweets.like')
+router.post('/tweets/:id/retweet', [TweetInteractionsController, 'retweet']).as('tweets.retweet')
+router
+  .delete('/tweets/:id/retweet', [TweetInteractionsController, 'unretweet'])
+  .as('tweets.unretweet')
+router
+  .get('/tweets/:id/interactions', [TweetInteractionsController, 'getInteractions'])
+  .as('tweets.interactions')
+
+// Routes pour le suivi
+router.post('/users/:id/follow', [FollowsController, 'toggle']).as('users.follow')
+
+// Routes pour les notifications
+router.get('/notifications', [FollowsController, 'getNotifications']).as('notifications.index')
+router.post('/notifications/:id/read', [FollowsController, 'markAsRead']).as('notifications.read')
 
 // Route de test
 router.on('/test').render('pages/home')

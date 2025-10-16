@@ -116,7 +116,18 @@ export default class AuthController {
   async dashboard({ view, auth }: HttpContext) {
     await auth.authenticate()
     const user = auth.getUserOrFail()
-    return view.render('pages/home_twitter', { user })
+
+    // Récupérer tous les tweets pour le feed
+    const { default: Tweet } = await import('#models/tweet')
+    const tweets = await Tweet.query().preload('user').orderBy('created_at', 'desc').limit(50) // Limiter à 50 tweets récents
+
+    // Récupérer des suggestions d'utilisateurs à suivre (excluant l'utilisateur actuel)
+    const suggestedUsers = await User.query()
+      .whereNot('id', user.id)
+      .orderBy('created_at', 'desc')
+      .limit(5)
+
+    return view.render('pages/home_twitter', { user, tweets, suggestedUsers })
   }
 
   /**
