@@ -15,6 +15,7 @@ const TweetInteractionsController = () => import('#controllers/tweet_interaction
 const FollowsController = () => import('#controllers/follows_controller')
 const ProfilesController = () => import('#controllers/profiles_controller')
 const RepliesController = () => import('#controllers/replies_controller')
+const SearchController = () => import('#controllers/search_controller')
 
 // Route pour servir les fichiers uploadés
 router.get('/uploads/*', ({ response, request }) => {
@@ -65,6 +66,10 @@ router.get('/users/:id/followers', [FollowsController, 'getFollowers']).as('user
 // Routes pour les notifications
 router.get('/notifications', [FollowsController, 'getNotifications']).as('notifications.index')
 router.post('/notifications/:id/read', [FollowsController, 'markAsRead']).as('notifications.read')
+
+// Routes pour la recherche
+router.get('/search', [SearchController, 'search']).as('search.index')
+router.get('/search/api', [SearchController, 'searchApi']).as('search.api')
 
 // Routes pour les profils
 router.post('/profile/update', [ProfilesController, 'update']).as('profile.update')
