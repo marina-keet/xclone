@@ -41,7 +41,7 @@ export default class extends BaseSeeder {
         password: await hash.make('demo123'),
         fullName: 'Démo User',
         bio: 'Compte de démonstration pour le clone X',
-        location: 'Lyon, France',
+        location: 'bascongo, RDC',
         website: null,
         verified: false,
         followersCount: 15,
@@ -67,7 +67,7 @@ export default class extends BaseSeeder {
       await User.create(userData)
     }
 
-    console.log('✅ Utilisateurs de test créés avec succès!')
+    console.log('✅ Utilisateurs  créés avec succès!')
     console.log('🔑 Comptes disponibles:')
     console.log('  - test@example.com / password123')
     console.log('  - admin@example.com / admin123')

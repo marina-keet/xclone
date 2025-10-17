@@ -36,7 +36,7 @@ export default class extends BaseSeeder {
       },
       {
         userId: user.id,
-        content: 'Tweet avec image locale �️ #local',
+        content: 'jou jou',
         imageUrl: 'test1.jpg',
         likesCount: 8,
         retweetsCount: 1,
@@ -55,7 +55,7 @@ export default class extends BaseSeeder {
     // Mettre à jour le compteur de tweets de l'utilisateur
     await user.merge({ tweetsCount: (user.tweetsCount || 0) + 4 }).save()
 
-    console.log('✅ Tweets de test créés avec succès!')
+    console.log('✅ Tweets  créés avec succès!')
     console.log(`   - Utilisateur: ${user.username} (${user.fullName})`)
     console.log(`   - Tweets créés: 4`)
     console.log('   - Deux tweets contiennent des images test')
