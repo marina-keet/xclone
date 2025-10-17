@@ -85,7 +85,7 @@ export default class TweetsController {
   /**
    * Récupérer les tweets d'un utilisateur pour son profil
    */
-  async getUserTweets({ params, view }: HttpContext) {
+  async getUserTweets({ params }: HttpContext) {
     try {
       const userId = params.userId
 
@@ -103,18 +103,69 @@ export default class TweetsController {
   }
 
   /**
-   * Récupérer tous les tweets pour le feed
+   * Récupérer les tweets des utilisateurs suivis pour le feed
    */
   async getFeed({ auth }: HttpContext) {
     try {
-      await auth.authenticate()
+      const user = await auth.authenticate()
 
-      const tweets = await Tweet.query().preload('user').orderBy('created_at', 'desc').limit(50)
+      // Récupérer les IDs des utilisateurs suivis
+      const { Database } = await import('@adonisjs/lucid/database')
+      const followedUserIds = await Database.from('follows')
+        .select('followed_id')
+        .where('follower_id', user.id)
+
+      const followedIds = followedUserIds.map((follow: any) => follow.followed_id)
+
+      // Inclure aussi les propres tweets de l'utilisateur
+      followedIds.push(user.id)
+
+      // Récupérer les tweets des utilisateurs suivis + ses propres tweets
+      const tweets = await Tweet.query()
+        .whereIn('user_id', followedIds)
+        .preload('user')
+        .orderBy('created_at', 'desc')
+        .limit(50)
 
       return tweets
     } catch (error) {
       console.error('Erreur lors de la récupération du feed:', error)
       return []
+    }
+  }
+
+  /**
+   * Supprimer un tweet (seulement le propriétaire peut supprimer)
+   */
+  async delete({ params, auth, response }: HttpContext) {
+    try {
+      const user = await auth.authenticate()
+      const tweetId = params.id
+
+      const tweet = await Tweet.findOrFail(tweetId)
+
+      // Vérifier que l'utilisateur est le propriétaire du tweet
+      if (tweet.userId !== user.id) {
+        return response.status(403).json({
+          error: 'Vous ne pouvez supprimer que vos propres tweets',
+        })
+      }
+
+      await tweet.delete()
+
+      // Décrémenter le compteur de tweets de l'utilisateur
+      user.tweetsCount = Math.max(0, user.tweetsCount - 1)
+      await user.save()
+
+      return response.json({
+        success: true,
+        message: 'Tweet supprimé avec succès',
+      })
+    } catch (error) {
+      console.error('Erreur lors de la suppression du tweet:', error)
+      return response.status(500).json({
+        error: 'Erreur lors de la suppression du tweet',
+      })
     }
   }
 }

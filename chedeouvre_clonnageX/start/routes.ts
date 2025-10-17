@@ -38,6 +38,7 @@ router.get('/profile', [AuthController, 'profile']).as('profile')
 router.post('/tweets', [TweetsController, 'store']).as('tweets.store')
 router.get('/tweets/user/:id', [TweetsController, 'getUserTweets']).as('tweets.user')
 router.get('/feed', [TweetsController, 'getFeed']).as('tweets.feed')
+router.delete('/tweets/:id', [TweetsController, 'delete']).as('tweets.delete')
 
 // Routes pour les interactions des tweets
 router.post('/tweets/:id/like', [TweetInteractionsController, 'toggleLike']).as('tweets.like')
