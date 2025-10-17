@@ -342,10 +342,29 @@
                                     </div>
                                 </div>
                                 @if(currentUser && currentUser.id !== user.id)
-                                <button onclick="toggleFollow({{ user.id }}, this)"
-                                    class="px-4 py-2 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-colors">
-                                    Suivre
-                                </button>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="toggleFollow({{ user.id }}, this)"
+                                        class="px-4 py-2 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-colors">
+                                        Suivre
+                                    </button>
+                                    <div class="relative">
+                                        <button onclick="toggleUserMenu({{ user.id }})"
+                                            class="p-2 rounded-full hover:bg-gray-700 transition-colors">
+                                            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            </svg>
+                                        </button>
+                                        <div id="userMenu-{{ user.id }}"
+                                            class="hidden absolute right-0 mt-2 w-48 bg-black border border-gray-700 rounded-xl shadow-lg z-50">
+                                            <button onclick="toggleBlock({{ user.id }}, this)"
+                                                class="w-full text-left px-4 py-3 text-red-400 hover:bg-gray-900 transition-colors rounded-xl">
+                                                <i class="fas fa-ban mr-2"></i>
+                                                <span class="block-text">Bloquer @{{ user.username }}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 @endif
                             </div>
                         </div>
@@ -631,6 +650,85 @@
                 console.error('Erreur lors du suivi:', error);
             }
         }
+
+        // Fonction pour basculer le menu utilisateur
+        function toggleUserMenu(userId) {
+            const menu = document.getElementById('userMenu-' + userId);
+            const allMenus = document.querySelectorAll('[id^="userMenu-"]');
+
+            // Fermer tous les autres menus
+            allMenus.forEach(m => {
+                if (m.id !== 'userMenu-' + userId) {
+                    m.classList.add('hidden');
+                }
+            });
+
+            // Basculer le menu actuel
+            menu.classList.toggle('hidden');
+        }
+
+        // Fonction pour bloquer/débloquer un utilisateur
+        async function toggleBlock(userId, button) {
+            try {
+                const response = await fetch('/users/' + userId + '/block', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                const data = await response.json();
+                const blockText = button.querySelector('.block-text');
+                const menu = document.getElementById('userMenu-' + userId);
+
+                if (data.status === 'blocked') {
+                    blockText.textContent = 'Débloquer utilisateur';
+                    button.innerHTML = '<i class="fas fa-unlock mr-2"></i><span class="block-text">Débloquer utilisateur</span>';
+
+                    // Masquer l'utilisateur de la liste (optionnel)
+                    const userCard = button.closest('.bg-gray-900');
+                    if (userCard) {
+                        userCard.style.opacity = '0.5';
+                        const nameElement = userCard.querySelector('.font-bold');
+                        if (nameElement) {
+                            nameElement.innerHTML += ' <span class="text-red-500 text-sm">(bloqué)</span>';
+                        }
+                    }
+
+                    alert(data.message);
+                } else {
+                    blockText.textContent = 'Bloquer utilisateur';
+                    button.innerHTML = '<i class="fas fa-ban mr-2"></i><span class="block-text">Bloquer utilisateur</span>';
+
+                    // Restaurer l'affichage normal
+                    const userCard = button.closest('.bg-gray-900');
+                    if (userCard) {
+                        userCard.style.opacity = '1';
+                        const nameElement = userCard.querySelector('.font-bold');
+                        if (nameElement) {
+                            nameElement.innerHTML = nameElement.innerHTML.replace(/ <span class="text-red-500 text-sm">\(bloqué\)<\/span>/, '');
+                        }
+                    }
+
+                    alert(data.message);
+                }
+
+                // Fermer le menu
+                menu.classList.add('hidden');
+            } catch (error) {
+                console.error('Erreur lors du blocage:', error);
+                alert('Erreur lors de l\'action de blocage');
+            }
+        }
+
+        // Fermer les menus en cliquant ailleurs
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('[onclick*="toggleUserMenu"]') && !event.target.closest('[id^="userMenu-"]')) {
+                const allMenus = document.querySelectorAll('[id^="userMenu-"]');
+                allMenus.forEach(menu => menu.classList.add('hidden'));
+            }
+        });
 
         // Fonction pour le sélecteur de thème
         function toggleThemeSelector() {

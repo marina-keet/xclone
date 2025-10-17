@@ -7,6 +7,7 @@ import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Tweet from './tweet.js'
 import Like from './like.js'
 import Retweet from './retweet.js'
+import Block from './block.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email', 'username'],
@@ -68,9 +69,38 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @hasMany(() => Retweet)
   declare retweets: HasMany<typeof Retweet>
 
+  // Relations de blocage
+  @hasMany(() => Block, {
+    foreignKey: 'blockerId',
+  })
+  declare blockedUsers: HasMany<typeof Block>
+
+  @hasMany(() => Block, {
+    foreignKey: 'blockedId',
+  })
+  declare blockers: HasMany<typeof Block>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  /**
+   * Obtenir les IDs des utilisateurs bloqués par cet utilisateur
+   */
+  async getBlockedUserIds(): Promise<number[]> {
+    const blocks = await Block.query().where('blocker_id', this.id).select('blocked_id')
+    
+    return blocks.map((block) => block.blockedId)
+  }
+
+  /**
+   * Obtenir les IDs des utilisateurs qui ont bloqué cet utilisateur
+   */
+  async getBlockingUserIds(): Promise<number[]> {
+    const blocks = await Block.query().where('blocked_id', this.id).select('blocker_id')
+    
+    return blocks.map((block) => block.blockerId)
+  }
 }

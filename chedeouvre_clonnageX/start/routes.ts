@@ -16,6 +16,7 @@ const FollowsController = () => import('#controllers/follows_controller')
 const ProfilesController = () => import('#controllers/profiles_controller')
 const RepliesController = () => import('#controllers/replies_controller')
 const SearchController = () => import('#controllers/search_controller')
+const BlocksController = () => import('#controllers/blocks_controller')
 
 // Route pour servir les fichiers uploadés
 router.get('/uploads/*', ({ response, request }) => {
@@ -62,6 +63,11 @@ router
   .as('users.followStatus')
 router.get('/users/:id/following', [FollowsController, 'getFollowing']).as('users.following')
 router.get('/users/:id/followers', [FollowsController, 'getFollowers']).as('users.followers')
+
+// Routes pour les blocages
+router.post('/users/:id/block', [BlocksController, 'toggle']).as('users.block')
+router.get('/users/:id/block-status', [BlocksController, 'isBlocked']).as('users.blockStatus')
+router.get('/blocked-users', [BlocksController, 'index']).as('blocked.index')
 
 // Routes pour les notifications
 router.get('/notifications', [FollowsController, 'getNotifications']).as('notifications.index')

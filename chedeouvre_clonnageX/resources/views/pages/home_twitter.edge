@@ -201,14 +201,37 @@
                         </a>
 
                         <!-- Plus d'options -->
-                        <a href="#"
-                            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                            </svg>
-                            <span class="text-lg">Plus</span>
-                        </a>
+                        <div class="relative">
+                            <button onclick="toggleMoreMenu()"
+                                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 w-full">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                </svg>
+                                <span class="text-lg">Plus</span>
+                            </button>
+
+                            <!-- Menu déroulant -->
+                            <div id="moreMenu"
+                                class="hidden absolute left-0 bottom-full mb-2 bg-black border border-gray-700 rounded-2xl p-2 shadow-lg z-50 min-w-max">
+                                <a href="/blocked-users"
+                                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-900 transition-all duration-200">
+                                    <i class="fas fa-ban text-red-400"></i>
+                                    <span class="text-sm">Utilisateurs bloqués</span>
+                                </a>
+                                <div class="border-t border-gray-700 my-1"></div>
+                                <a href="#"
+                                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-900 transition-all duration-200">
+                                    <i class="fas fa-cog"></i>
+                                    <span class="text-sm">Paramètres</span>
+                                </a>
+                                <a href="#"
+                                    class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-900 transition-all duration-200">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="text-sm">Aide</span>
+                                </a>
+                            </div>
+                        </div>
 
                         <!-- Changement de thème -->
                         <div class="relative">
@@ -1078,13 +1101,26 @@
             selector.classList.toggle('hidden');
         }
 
-        // Fermer le sélecteur si on clique ailleurs
+        function toggleMoreMenu() {
+            const menu = document.getElementById('moreMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Fermer les menus si on clique ailleurs
         document.addEventListener('click', function (event) {
             const selector = document.getElementById('themeSelector');
-            const themeButton = event.target.closest('.relative');
+            const moreMenu = document.getElementById('moreMenu');
+            const themeButton = event.target.closest('[onclick="toggleThemeSelector()"]');
+            const moreButton = event.target.closest('[onclick="toggleMoreMenu()"]');
 
+            // Fermer le sélecteur de thème
             if (!themeButton && !selector.classList.contains('hidden')) {
                 selector.classList.add('hidden');
+            }
+
+            // Fermer le menu "Plus"
+            if (!moreButton && moreMenu && !moreMenu.contains(event.target) && !moreMenu.classList.contains('hidden')) {
+                moreMenu.classList.add('hidden');
             }
         });
 
