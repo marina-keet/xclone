@@ -490,11 +490,16 @@
                                 <div class="flex space-x-3">
                                     <!-- Avatar de l'utilisateur -->
                                     <div
-                                        class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-gray-600">
+                                        class="w-12 h-12 {{ tweet.user.avatar ? '' : 'bg-gradient-to-r from-blue-500 to-purple-600' }} rounded-full flex items-center justify-center flex-shrink-0 border-2 border-gray-600">
+                                        @if(tweet.user.avatar)
+                                        <img src="{{ tweet.user.avatar }}" alt="Avatar de {{ tweet.user.username }}"
+                                            class="w-full h-full rounded-full object-cover">
+                                        @else
                                         <span class="text-white font-bold text-lg">
                                             {{ tweet.user.fullName ? tweet.user.fullName.charAt(0).toUpperCase() :
                                             tweet.user.username.charAt(0).toUpperCase() }}
                                         </span>
+                                        @endif
                                     </div>
                                     <div class="flex-1">
                                         <!-- Informations de l'utilisateur -->
