@@ -175,4 +175,94 @@ export default class FollowsController {
       return response.status(500).json({ error: 'Erreur serveur' })
     }
   }
+
+  /**
+   * Vérifier si l'utilisateur authentifié suit un autre utilisateur
+   */
+  async checkFollowStatus({ params, auth, response }: HttpContext) {
+    try {
+      const currentUser = await auth.authenticate()
+      const targetUserId = params.id
+
+      const existingFollow = await Follow.query()
+        .where('follower_id', currentUser.id)
+        .where('following_id', targetUserId)
+        .first()
+
+      return response.json({
+        isFollowing: !!existingFollow,
+      })
+    } catch (error) {
+      console.error('Erreur lors de la vérification du statut de suivi:', error)
+      return response.status(500).json({ error: 'Erreur serveur' })
+    }
+  }
+
+  /**
+   * Obtenir la liste des abonnements d'un utilisateur
+   */
+  async getFollowing({ params, response }: HttpContext) {
+    try {
+      const userId = params.id
+
+      const following = await Follow.query()
+        .where('follower_id', userId)
+        .preload('following')
+        .orderBy('created_at', 'desc')
+
+      const users = following.map((follow) => ({
+        id: follow.following.id,
+        username: follow.following.username,
+        fullName: follow.following.fullName,
+        avatar: follow.following.avatar,
+        followersCount: follow.following.followersCount,
+        followingCount: follow.following.followingCount,
+        followedAt: follow.createdAt.toFormat('dd/MM/yyyy'),
+      }))
+
+      console.log(
+        '🔍 Following users with avatars:',
+        users.map((u) => ({ username: u.username, avatar: u.avatar }))
+      )
+
+      return response.json({ users })
+    } catch (error) {
+      console.error('Erreur lors de la récupération des abonnements:', error)
+      return response.status(500).json({ error: 'Erreur serveur' })
+    }
+  }
+
+  /**
+   * Obtenir la liste des abonnés d'un utilisateur
+   */
+  async getFollowers({ params, response }: HttpContext) {
+    try {
+      const userId = params.id
+
+      const followers = await Follow.query()
+        .where('following_id', userId)
+        .preload('follower')
+        .orderBy('created_at', 'desc')
+
+      const users = followers.map((follow) => ({
+        id: follow.follower.id,
+        username: follow.follower.username,
+        fullName: follow.follower.fullName,
+        avatar: follow.follower.avatar,
+        followersCount: follow.follower.followersCount,
+        followingCount: follow.follower.followingCount,
+        followedAt: follow.createdAt.toFormat('dd/MM/yyyy'),
+      }))
+
+      console.log(
+        '🔍 Followers users with avatars:',
+        users.map((u) => ({ username: u.username, avatar: u.avatar }))
+      )
+
+      return response.json({ users })
+    } catch (error) {
+      console.error('Erreur lors de la récupération des abonnés:', error)
+      return response.status(500).json({ error: 'Erreur serveur' })
+    }
+  }
 }

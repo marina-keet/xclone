@@ -56,6 +56,11 @@ router.get('/tweets/:id/replies', [RepliesController, 'getReplies']).as('replies
 
 // Routes pour le suivi
 router.post('/users/:id/follow', [FollowsController, 'toggle']).as('users.follow')
+router
+  .get('/users/:id/follow-status', [FollowsController, 'checkFollowStatus'])
+  .as('users.followStatus')
+router.get('/users/:id/following', [FollowsController, 'getFollowing']).as('users.following')
+router.get('/users/:id/followers', [FollowsController, 'getFollowers']).as('users.followers')
 
 // Routes pour les notifications
 router.get('/notifications', [FollowsController, 'getNotifications']).as('notifications.index')
