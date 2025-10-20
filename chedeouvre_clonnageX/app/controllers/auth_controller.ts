@@ -128,7 +128,20 @@ export default class AuthController {
 
     // Formater les tweets avec les hashtags cliquables
     const formattedTweets = tweets.map((tweet) => {
+      // Assigner un fullName temporaire si l'utilisateur n'en a pas
+      if (tweet.user && (!tweet.user.fullName || tweet.user.fullName.trim() === '')) {
+        tweet.user.fullName = `Utilisateur ${tweet.user.username}`
+      }
+
       const serialized = tweet.serialize()
+
+      // Inclure explicitement l'utilisateur sérialisé dans l'objet tweet
+      serialized.user = tweet.user
+        ? typeof tweet.user.toJSON === 'function'
+          ? tweet.user.toJSON()
+          : tweet.user
+        : null
+
       return {
         ...serialized,
         createdAt: tweet.createdAt, // Préserver l'objet DateTime original
@@ -143,6 +156,14 @@ export default class AuthController {
       .orderBy('created_at', 'desc')
       .limit(5)
 
+    // Assigner des fullNames temporaires aux suggestions aussi
+    const suggestedUsersMapped = suggestedUsers.map((suggestedUser) => {
+      if (!suggestedUser.fullName || suggestedUser.fullName.trim() === '') {
+        suggestedUser.fullName = `Utilisateur ${suggestedUser.username}`
+      }
+      return typeof suggestedUser.toJSON === 'function' ? suggestedUser.toJSON() : suggestedUser
+    })
+
     // Calculer le nombre total de messages non lus
     const { default: Message } = await import('#models/message')
     const totalUnreadCount = await Message.query()
@@ -156,7 +177,7 @@ export default class AuthController {
     return view.render('pages/home_twitter', {
       user,
       tweets: formattedTweets,
-      suggestedUsers,
+      suggestedUsers: suggestedUsersMapped,
       totalUnreadCount: unreadMessagesCount,
     })
   }

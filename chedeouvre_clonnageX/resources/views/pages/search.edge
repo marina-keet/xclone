@@ -1,968 +1,843 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrfToken }}" />
-    <title>
-      Recherche - Twitter Clone
-    </title>
-    <script src="https://cdn.tailwindcss.com">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrfToken }}" />
+  <title>
+    Recherche - Twitter Clone
+  </title>
+  <script src="https://cdn.tailwindcss.com">
 
-    </script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <style>
-      /* Styles pour les thèmes */
-      
-      .theme-blanc {
-        --tw-bg-opacity: 1;
-        background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-        --tw-text-opacity: 1;
-        color: rgb(0 0 0 / var(--tw-text-opacity));
-      }
-      
-      .theme-blanc .sidebar,
-      .theme-blanc .border-gray-800 {
-        border-color: rgb(229 231 235);
-      }
-      
-      .theme-blanc .bg-black {
-        background-color: rgb(255 255 255);
-      }
-      
-      .theme-blanc .text-white {
-        color: rgb(0 0 0);
-      }
-      
-      .theme-blanc .hover\:bg-gray-900:hover {
-        background-color: rgb(243 244 246);
-      }
-      
-      .theme-vert {
-        --primary-color: rgb(34 197 94);
-      }
-      
-      .theme-vert .bg-blue-500 {
-        background-color: var(--primary-color);
-      }
-      
-      .theme-rouge {
-        --primary-color: rgb(239 68 68);
-      }
-      
-      .theme-rouge .bg-blue-500 {
-        background-color: var(--primary-color);
-      }
-      
-      .theme-rose {
-        --primary-color: rgb(236 72 153);
-      }
-      
-      .theme-rose .bg-blue-500 {
-        background-color: var(--primary-color);
-      }
-      
-      .theme-bleu {
-        --primary-color: rgb(59 130 246);
-      }
-      
-      .theme-bleu .bg-blue-500 {
-        background-color: var(--primary-color);
-      }
-    </style>
-  </head>
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* Styles pour les thèmes */
 
-  <body class="bg-black text-white min-h-screen">
-    <div class="flex min-h-screen">
-      <!-- Sidebar gauche -->
-      <div class="w-64 flex flex-col bg-black border-r border-gray-800 fixed h-full z-30 sidebar">
-        <div class="flex-1 flex flex-col min-h-0">
-          <!-- Logo X -->
-          <div class="mb-2 p-3">
-            <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+    .theme-blanc {
+      --tw-bg-opacity: 1;
+      background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+      --tw-text-opacity: 1;
+      color: rgb(0 0 0 / var(--tw-text-opacity));
+    }
+
+    .theme-blanc .sidebar,
+    .theme-blanc .border-gray-800 {
+      border-color: rgb(229 231 235);
+    }
+
+    .theme-blanc .bg-black {
+      background-color: rgb(255 255 255);
+    }
+
+    .theme-blanc .text-white {
+      color: rgb(0 0 0);
+    }
+
+    .theme-blanc .hover\:bg-gray-900:hover {
+      background-color: rgb(243 244 246);
+    }
+
+    .theme-vert {
+      --primary-color: rgb(34 197 94);
+    }
+
+    .theme-vert .bg-blue-500 {
+      background-color: var(--primary-color);
+    }
+
+    .theme-rouge {
+      --primary-color: rgb(239 68 68);
+    }
+
+    .theme-rouge .bg-blue-500 {
+      background-color: var(--primary-color);
+    }
+
+    .theme-rose {
+      --primary-color: rgb(236 72 153);
+    }
+
+    .theme-rose .bg-blue-500 {
+      background-color: var(--primary-color);
+    }
+
+    .theme-bleu {
+      --primary-color: rgb(59 130 246);
+    }
+
+    .theme-bleu .bg-blue-500 {
+      background-color: var(--primary-color);
+    }
+  </style>
+</head>
+
+<body class="bg-black text-white min-h-screen">
+  <div class="flex min-h-screen">
+    <!-- Sidebar gauche -->
+    <div class="w-64 flex flex-col bg-black border-r border-gray-800 fixed h-full z-30 sidebar">
+      <div class="flex-1 flex flex-col min-h-0">
+        <!-- Logo X -->
+        <div class="mb-2 p-3">
+          <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 overflow-hidden">
+          <div class="space-y-0.5">
+            <!-- Maison -->
+            <a href="/dashboard"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 9c-2.209 0-4 1.791-4 4s1.791 4 4 4 4-1.791 4-4-1.791-4-4-4zm9.707-5.293l-9-9a.999.999 0 00-1.414 0l-9 9A.999.999 0 003 5.414V19a3 3 0 003 3h4a1 1 0 001-1v-3a1 1 0 011-1h2a1 1 0 011 1v3a1 1 0 001 1h4a3 3 0 003-3V5.414a.999.999 0 00-.293-.707z" />
+              </svg>
+              <span class="text-lg">Maison</span>
+            </a>
+
+            <!-- Explorer / Recherche -->
+            <a href="/search"
+              class="flex items-center space-x-3 p-2 rounded-full bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span class="text-lg">Recherche</span>
+            </a>
+
+            <!-- Notifications -->
+            <button id="notificationsBtn"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 w-full text-left">
+              <div class="relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-5 5v-5z M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span id="notificationBadge"
+                  class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs px-1 hidden">0</span>
+              </div>
+              <span class="text-lg">Notifications</span>
+            </button>
+
+            <!-- Messages -->
+            <a href="#"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span class="text-lg">Messages</span>
+            </a>
+
+            <!-- Grok -->
+            <a href="#"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span class="text-lg">Grok</span>
+            </a>
+
+            <!-- Signets -->
+            <a href="#"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+              <span class="text-lg">Signets</span>
+            </a>
+
+            <!-- Prime -->
+            <a href="#"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              <span class="text-lg">Prime</span>
+            </a>
+
+            <!-- Profil -->
+            <a href="/profile"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span class="text-lg">Profil</span>
+            </a>
+
+            <!-- Plus d'options -->
+            <a href="#"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+              </svg>
+              <span class="text-lg">Plus</span>
+            </a>
+
+            <!-- Changement de thème -->
+            <div class="relative">
+              <button onclick="toggleThemeSelector()"
+                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 w-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
+                </svg>
+                <span class="text-lg">Thème</span>
+              </button>
+
+              <!-- Sélecteur de thème -->
+              <div id="themeSelector"
+                class="hidden absolute left-0 bottom-full mb-2 bg-gray-800 rounded-2xl p-4 shadow-lg z-50 min-w-max">
+                <h3 class="text-white font-bold mb-3 text-sm">
+                  Choisir un thème
+                </h3>
+                <div class="grid grid-cols-3 gap-2">
+                  <button onclick="changeTheme('noir')"
+                    class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                    <div class="w-6 h-6 bg-black border border-gray-600 rounded-full mb-1">
+                    </div>
+                    <span class="text-xs text-white">Noir</span>
+                  </button>
+                  <button onclick="changeTheme('blanc')"
+                    class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                    <div class="w-6 h-6 bg-white border border-gray-600 rounded-full mb-1">
+                    </div>
+                    <span class="text-xs text-white">Blanc</span>
+                  </button>
+                  <button onclick="changeTheme('vert')"
+                    class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                    <div class="w-6 h-6 bg-green-600 rounded-full mb-1">
+                    </div>
+                    <span class="text-xs text-white">Vert</span>
+                  </button>
+                  <button onclick="changeTheme('rouge')"
+                    class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                    <div class="w-6 h-6 bg-red-600 rounded-full mb-1">
+                    </div>
+                    <span class="text-xs text-white">Rouge</span>
+                  </button>
+                  <button onclick="changeTheme('rose')"
+                    class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                    <div class="w-6 h-6 bg-pink-600 rounded-full mb-1">
+                    </div>
+                    <span class="text-xs text-white">Rose</span>
+                  </button>
+                  <button onclick="changeTheme('bleu')"
+                    class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all">
+                    <div class="w-6 h-6 bg-blue-600 rounded-full mb-1">
+                    </div>
+                    <span class="text-xs text-white">Bleu</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bouton Poster -->
+          <button onclick="goToComposeTweet()"
+            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-full mt-4 transition-all duration-200 text-sm">
+            Poster
+          </button>
+        </nav>
+
+        <!-- Profil utilisateur -->
+        @if(currentUser)
+        <div class="flex-shrink-0 px-4 pb-2 pt-2">
+          <div
+            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 cursor-pointer transition-all duration-200 mb-2">
+            <div
+              class="w-8 h-8 {{ currentUser.avatar ? '' : 'bg-gradient-to-r from-pink-500 to-purple-600' }} rounded-full flex items-center justify-center">
+              @if(currentUser.avatar)
+              <img src="{{ currentUser.avatar }}" alt="Avatar de {{ currentUser.username }}"
+                class="w-full h-full rounded-full object-cover" />
+              @else
+              <span class="text-white font-bold text-xs">{{ currentUser.fullName ?
+                currentUser.fullName.charAt(0).toUpperCase() :
+                currentUser.username.charAt(0).toUpperCase() }}</span>
+              @endif
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="font-bold text-white text-sm truncate">
+                {{ currentUser.username }}
+              </div>
+              <div class="text-gray-400 text-xs truncate">
+                {{ currentUser.fullName || currentUser.username }}
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-              />
+                d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
             </svg>
           </div>
 
-          <!-- Navigation -->
-          <nav class="flex-1 px-3 overflow-hidden">
-            <div class="space-y-0.5">
-              <!-- Maison -->
-              <a
-                href="/dashboard"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 9c-2.209 0-4 1.791-4 4s1.791 4 4 4 4-1.791 4-4-1.791-4-4-4zm9.707-5.293l-9-9a.999.999 0 00-1.414 0l-9 9A.999.999 0 003 5.414V19a3 3 0 003 3h4a1 1 0 001-1v-3a1 1 0 011-1h2a1 1 0 011 1v3a1 1 0 001 1h4a3 3 0 003-3V5.414a.999.999 0 00-.293-.707z"
-                  />
+          <!-- Bouton déconnexion -->
+          <div class="pb-2">
+            <form action="/logout" method="POST" class="w-full">
+              {{ csrfField() }}
+              <button type="submit"
+                class="w-full text-left p-2 rounded-full hover:bg-gray-900 transition-all duration-200 text-red-400 text-sm">
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                <span class="text-lg">Maison</span>
-              </a>
-
-              <!-- Explorer / Recherche -->
-              <a
-                href="/search"
-                class="flex items-center space-x-3 p-2 rounded-full bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <span class="text-lg">Recherche</span>
-              </a>
-
-              <!-- Notifications -->
-              <button
-                id="notificationsBtn"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 w-full text-left"
-              >
-                <div class="relative">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 17h5l-5 5v-5z M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span
-                    id="notificationBadge"
-                    class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs px-1 hidden"
-                  >0</span>
-                </div>
-                <span class="text-lg">Notifications</span>
+                Déconnexion
               </button>
+            </form>
+          </div>
+        </div>
+        @endif
+      </div>
+    </div>
 
-              <!-- Messages -->
-              <a
-                href="#"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                <span class="text-lg">Messages</span>
-              </a>
+    <!-- Main content -->
+    <div class="flex-1 ml-64 max-w-2xl border-r border-gray-800">
+      <!-- Header -->
+      <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
+        <h2 class="text-xl font-bold">
+          Recherche
+        </h2>
+      </div>
 
-              <!-- Grok -->
-              <a
-                href="#"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  />
-                </svg>
-                <span class="text-lg">Grok</span>
-              </a>
+      <!-- Search Form -->
+      <div class="p-4">
+        <form action="/search" method="GET" class="mb-6">
+          <div class="relative">
+            <input type="text" name="q" value="{{ query }}" placeholder="Rechercher des utilisateurs et des tweets..."
+              class="w-full bg-gray-900 border border-gray-700 rounded-full px-6 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 pr-12"
+              id="search-input" autocomplete="off" />
+            <button type="submit"
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-white transition-colors">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
 
-              <!-- Signets -->
-              <a
-                href="#"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                  />
-                </svg>
-                <span class="text-lg">Signets</span>
-              </a>
-
-              <!-- Prime -->
-              <a
-                href="#"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24">
-                  <path
-                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-                  />
-                </svg>
-                <span class="text-lg">Prime</span>
-              </a>
-
-              <!-- Profil -->
-              <a
-                href="/profile"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                <span class="text-lg">Profil</span>
-              </a>
-
-              <!-- Plus d'options -->
-              <a
-                href="#"
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                  />
-                </svg>
-                <span class="text-lg">Plus</span>
-              </a>
-
-              <!-- Changement de thème -->
-              <div class="relative">
-                <button
-                  onclick="toggleThemeSelector()"
-                  class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 w-full"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
-                    />
-                  </svg>
-                  <span class="text-lg">Thème</span>
-                </button>
-
-                <!-- Sélecteur de thème -->
-                <div
-                  id="themeSelector"
-                  class="hidden absolute left-0 bottom-full mb-2 bg-gray-800 rounded-2xl p-4 shadow-lg z-50 min-w-max"
-                >
-                  <h3 class="text-white font-bold mb-3 text-sm">
-                    Choisir un thème
-                  </h3>
-                  <div class="grid grid-cols-3 gap-2">
-                    <button
-                      onclick="changeTheme('noir')"
-                      class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all"
-                    >
-                      <div class="w-6 h-6 bg-black border border-gray-600 rounded-full mb-1">
-                      </div>
-                      <span class="text-xs text-white">Noir</span>
-                    </button>
-                    <button
-                      onclick="changeTheme('blanc')"
-                      class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all"
-                    >
-                      <div class="w-6 h-6 bg-white border border-gray-600 rounded-full mb-1">
-                      </div>
-                      <span class="text-xs text-white">Blanc</span>
-                    </button>
-                    <button
-                      onclick="changeTheme('vert')"
-                      class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all"
-                    >
-                      <div class="w-6 h-6 bg-green-600 rounded-full mb-1">
-                      </div>
-                      <span class="text-xs text-white">Vert</span>
-                    </button>
-                    <button
-                      onclick="changeTheme('rouge')"
-                      class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all"
-                    >
-                      <div class="w-6 h-6 bg-red-600 rounded-full mb-1">
-                      </div>
-                      <span class="text-xs text-white">Rouge</span>
-                    </button>
-                    <button
-                      onclick="changeTheme('rose')"
-                      class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all"
-                    >
-                      <div class="w-6 h-6 bg-pink-600 rounded-full mb-1">
-                      </div>
-                      <span class="text-xs text-white">Rose</span>
-                    </button>
-                    <button
-                      onclick="changeTheme('bleu')"
-                      class="theme-btn flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-all"
-                    >
-                      <div class="w-6 h-6 bg-blue-600 rounded-full mb-1">
-                      </div>
-                      <span class="text-xs text-white">Bleu</span>
-                    </button>
+      <!-- Search Results -->
+      @if(query)
+      <div class="px-4">
+        @if(hasResults)
+        <!-- Users Results -->
+        @if(users.length > 0)
+        <div class="mb-8">
+          <h3 class="text-lg font-bold mb-4 text-gray-300">
+            Utilisateurs
+          </h3>
+          <div class="space-y-3">
+            @each(user in users)
+            <div class="bg-gray-900 rounded-xl p-4 hover:bg-gray-800 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div
+                    class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                    @if(user.avatar)
+                    <img src="{{ user.avatar }}" alt="Avatar" class="w-full h-full rounded-full object-cover" />
+                    @else
+                    <span class="text-white font-bold text-lg">{{ user.username.charAt(0).toUpperCase() }}</span>
+                    @endif
+                  </div>
+                  <div>
+                    <div class="font-bold text-white">
+                      {{ user.fullName || user.username }}
+                    </div>
+                    <div class="text-gray-500">
+                      &#64;{{ user.username }}
+                    </div>
+                    @if(user.bio)
+                    <div class="text-sm text-gray-400 mt-1">
+                      {{ user.bio }}
+                    </div>
+                    @endif
+                    <div class="text-xs text-gray-500 mt-1">
+                      {{ user.followersCount }} abonnés • {{ user.followingCount }}
+                      abonnements
+                    </div>
                   </div>
                 </div>
+                @if(currentUser && currentUser.id !== user.id)
+                <div class="flex items-center space-x-2">
+                  <button onclick="toggleFollow({{ user.id }}, this)"
+                    class="px-4 py-2 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-colors">
+                    Suivre
+                  </button>
+                  <div class="relative">
+                    <button onclick="toggleUserMenu({{ user.id }})"
+                      class="p-2 rounded-full hover:bg-gray-700 transition-colors">
+                      <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                      </svg>
+                    </button>
+                    <div id="userMenu-{{ user.id }}"
+                      class="hidden absolute right-0 mt-2 w-48 bg-black border border-gray-700 rounded-xl shadow-lg z-50">
+                      <button onclick="toggleBlock({{ user.id }}, this)"
+                        class="w-full text-left px-4 py-3 text-red-400 hover:bg-gray-900 transition-colors rounded-xl">
+                        <i class="fas fa-ban mr-2"></i>
+                        <span class="block-text">Bloquer &#64;{{ user.username }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                @endif
               </div>
             </div>
+            @endeach
+          </div>
+        </div>
+        @endif
 
-            <!-- Bouton Poster -->
-            <button
-              onclick="goToComposeTweet()"
-              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-full mt-4 transition-all duration-200 text-sm"
-            >
-              Poster
-                    </button>
-          </nav>
-
-          <!-- Profil utilisateur -->
-          @if(currentUser)
-            <div class="flex-shrink-0 px-4 pb-2 pt-2">
-              <div
-                class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 cursor-pointer transition-all duration-200 mb-2"
-              >
+        <!-- Tweets Results -->
+        @if(tweets.length > 0)
+        <div class="mb-8">
+          <h3 class="text-lg font-bold mb-4 text-gray-300">
+            Tweets
+          </h3>
+          <div class="space-y-4">
+            @each(tweet in tweets)
+            <div class="bg-gray-900 rounded-xl p-4 hover:bg-gray-800 transition-colors" data-tweet-id="{{ tweet.id }}">
+              <div class="flex space-x-3">
+                <!-- Avatar -->
                 <div
-                  class="w-8 h-8 {{ currentUser.avatar ? '' : 'bg-gradient-to-r from-pink-500 to-purple-600' }} rounded-full flex items-center justify-center"
-                >
-                  @if(currentUser.avatar)
-                    <img
-                      src="{{ currentUser.avatar }}"
-                      alt="Avatar de {{ currentUser.username }}"
-                      class="w-full h-full rounded-full object-cover"
-                    />
+                  class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  @if(tweet.user.avatar)
+                  <img src="{{ tweet.user.avatar }}" alt="Avatar" class="w-full h-full rounded-full object-cover" />
                   @else
-                    <span class="text-white font-bold text-xs">{{ currentUser.fullName ?
-                                currentUser.fullName.charAt(0).toUpperCase() :
-                                currentUser.username.charAt(0).toUpperCase() }}</span>
+                  <span class="text-white font-bold text-lg">{{ tweet.user.username.charAt(0).toUpperCase() }}</span>
                   @endif
                 </div>
+
+                <!-- Content -->
                 <div class="flex-1 min-w-0">
-                  <div class="font-bold text-white text-sm truncate">
-                    {{ currentUser.username }}
+                  <!-- Header -->
+                  <div class="flex items-center space-x-2 mb-2">
+                    <span class="font-bold text-white">{{ tweet.user.fullName ||
+                      tweet.user.username }}</span>
+                    <span class="text-gray-500">&#64;{{ tweet.user.username }}</span>
+                    <span class="text-gray-500">•</span>
+                    <span class="text-gray-500 text-sm">{{ tweet.createdAt.toFormat('dd/MM/yyyy') }}</span>
                   </div>
-                  <div class="text-gray-400 text-xs truncate">
-                    {{ currentUser.fullName || currentUser.username }}
+
+                  <!-- Tweet content -->
+                  <div class="text-white mb-3 break-words">
+                    {{ tweet.content }}
+                  </div>
+
+                  <!-- Image if exists -->
+                  @if(tweet.imageUrl)
+                  <div class="mb-3">
+                    <img src="/uploads/{{ tweet.imageUrl }}" alt="Image du tweet"
+                      class="rounded-2xl max-w-full h-auto border border-gray-700" />
+                  </div>
+                  @endif
+
+                  <!-- Interactions -->
+                  <div class="flex items-center justify-between max-w-md">
+                    <!-- Like -->
+                    <button onclick="toggleLike({{ tweet.id }}, this)"
+                      class="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors group">
+                      <div class="p-2 rounded-full group-hover:bg-red-500 group-hover:bg-opacity-20">
+                        <i class="fas fa-heart"></i>
+                      </div>
+                      <span class="text-sm">{{ tweet.likesCount || 0 }}</span>
+                    </button>
+
+                    <!-- Retweet -->
+                    <button onclick="toggleRetweet({{ tweet.id }}, this)"
+                      class="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors group">
+                      <div class="p-2 rounded-full group-hover:bg-green-500 group-hover:bg-opacity-20">
+                        <i class="fas fa-retweet"></i>
+                      </div>
+                      <span class="text-sm">{{ tweet.retweetsCount || 0 }}</span>
+                    </button>
+
+                    <!-- Delete (si c'est notre tweet) -->
+                    @if(currentUser && currentUser.id === tweet.user.id)
+                    <button onclick="deleteTweet({{ tweet.id }}, this)"
+                      class="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors group">
+                      <div class="p-2 rounded-full group-hover:bg-red-500 group-hover:bg-opacity-20">
+                        <i class="fas fa-trash"></i>
+                      </div>
+                    </button>
+                    @endif
                   </div>
                 </div>
-                <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"
-                  />
-                </svg>
-              </div>
-
-              <!-- Bouton déconnexion -->
-              <div class="pb-2">
-                <form action="/logout" method="POST" class="w-full">
-                  {{ csrfField() }}
-                            <button
-                    type="submit"
-                    class="w-full text-left p-2 rounded-full hover:bg-gray-900 transition-all duration-200 text-red-400 text-sm"
-                  >
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    Déconnexion
-                            </button>
-                </form>
               </div>
             </div>
+            @endeach
+          </div>
+        </div>
+        @endif
+        @else
+        <div class="text-center py-12">
+          <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-400 mb-2">
+            Aucun résultat trouvé
+          </h3>
+          <p class="text-gray-500">
+            Essayez avec d'autres mots-clés
+          </p>
+        </div>
+        @endif
+      </div>
+      @else
+      <div class="text-center py-12 px-4">
+        <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-400 mb-2">
+          Recherchez des utilisateurs et des tweets
+        </h3>
+        <p class="text-gray-500">
+          Utilisez la barre de recherche ci-dessus pour commencer
+        </p>
+      </div>
+      @endif
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="w-80 p-4 space-y-6">
+      <!-- Trends -->
+      <div class="bg-gray-900 rounded-xl p-4">
+        <h3 class="text-xl font-bold mb-4">
+          Tendances pour vous
+        </h3>
+        <div class="space-y-3">
+          <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
+            <div class="text-sm text-gray-500">
+              Tendance dans Technologie
+            </div>
+            <div class="font-bold">
+              #JavaScript
+            </div>
+            <div class="text-sm text-gray-500">
+              12,5 k Tweets
+            </div>
+          </div>
+          <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
+            <div class="text-sm text-gray-500">
+              Tendance dans Programmation
+            </div>
+            <div class="font-bold">
+              #AdonisJS
+            </div>
+            <div class="text-sm text-gray-500">
+              8,3 k Tweets
+            </div>
+          </div>
+          <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
+            <div class="text-sm text-gray-500">
+              Tendance dans Web
+            </div>
+            <div class="font-bold">
+              #TypeScript
+            </div>
+            <div class="text-sm text-gray-500">
+              6,2 k Tweets
+            </div>
+          </div>
+          <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
+            <div class="text-sm text-gray-500">
+              Tendance en France
+            </div>
+            <div class="font-bold">
+              #TechFrance
+            </div>
+            <div class="text-sm text-gray-500">
+              4,8 k Tweets
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Who to follow -->
+      <div class="bg-gray-900 rounded-xl p-4">
+        <h3 class="text-xl font-bold mb-4">
+          À suivre
+        </h3>
+        <div class="space-y-3">
+          @if(suggestedUsers && suggestedUsers.length > 0)
+          @each(user in suggestedUsers)
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div
+                class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                @if(user.avatar)
+                <img src="{{ user.avatar }}" alt="Avatar de {{ user.username }}"
+                  class="w-full h-full rounded-full object-cover" />
+                @else
+                <span class="text-white font-bold text-sm">{{ user.username.charAt(0).toUpperCase() }}</span>
+                @endif
+              </div>
+              <div>
+                <div class="font-bold text-sm">
+                  {{ user.fullName || user.username }}
+                </div>
+                <div class="text-gray-500 text-sm">
+                  &#64;{{ user.username }}
+                </div>
+              </div>
+            </div>
+            @if(currentUser && currentUser.id !== user.id)
+            <button onclick="toggleFollow({{ user.id }}, this)"
+              class="px-4 py-1 bg-white text-black rounded-full font-bold text-sm hover:bg-gray-200 transition-colors">
+              Suivre
+            </button>
+            @endif
+          </div>
+          @endeach
+          @else
+          <div class="text-center py-4">
+            <div class="text-gray-500 text-sm">
+              Aucun utilisateur à suggérer
+            </div>
+          </div>
           @endif
         </div>
       </div>
-
-      <!-- Main content -->
-      <div class="flex-1 ml-64 max-w-2xl border-r border-gray-800">
-        <!-- Header -->
-        <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
-          <h2 class="text-xl font-bold">
-            Recherche
-          </h2>
-        </div>
-
-        <!-- Search Form -->
-        <div class="p-4">
-          <form action="/search" method="GET" class="mb-6">
-            <div class="relative">
-              <input
-                type="text"
-                name="q"
-                value="{{ query }}"
-                placeholder="Rechercher des utilisateurs et des tweets..."
-                class="w-full bg-gray-900 border border-gray-700 rounded-full px-6 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 pr-12"
-                id="search-input"
-                autocomplete="off"
-              />
-              <button
-                type="submit"
-                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
-              >
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Search Results -->
-        @if(query)
-          <div class="px-4">
-            @if(hasResults)
-              <!-- Users Results -->
-              @if(users.length > 0)
-                <div class="mb-8">
-                  <h3 class="text-lg font-bold mb-4 text-gray-300">
-                    Utilisateurs
-                  </h3>
-                  <div class="space-y-3">
-                    @each(user in users)
-                      <div class="bg-gray-900 rounded-xl p-4 hover:bg-gray-800 transition-colors">
-                        <div class="flex items-center justify-between">
-                          <div class="flex items-center space-x-3">
-                            <div
-                              class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center"
-                            >
-                              @if(user.avatar)
-                                <img src="{{ user.avatar }}" alt="Avatar" class="w-full h-full rounded-full object-cover" />
-                              @else
-                                <span class="text-white font-bold text-lg">{{ user.username.charAt(0).toUpperCase() }}</span>
-                              @endif
-                            </div>
-                            <div>
-                              <div class="font-bold text-white">
-                                {{ user.fullName || user.username }}
-                              </div>
-                              <div class="text-gray-500">
-                                @{{ user.username }}
-                              </div>
-                              @if(user.bio)
-                                <div class="text-sm text-gray-400 mt-1">
-                                  {{ user.bio }}
-                                </div>
-                              @endif
-                              <div class="text-xs text-gray-500 mt-1">
-                                {{ user.followersCount }} abonnés • {{ user.followingCount }}
-                                            abonnements
-                              </div>
-                            </div>
-                          </div>
-                          @if(currentUser && currentUser.id !== user.id)
-                            <div class="flex items-center space-x-2">
-                              <button
-                                onclick="toggleFollow({{ user.id }}, this)"
-                                class="px-4 py-2 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-colors"
-                              >
-                                Suivre
-                                    </button>
-                              <div class="relative">
-                                <button
-                                  onclick="toggleUserMenu({{ user.id }})"
-                                  class="p-2 rounded-full hover:bg-gray-700 transition-colors"
-                                >
-                                  <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                      d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"
-                                    />
-                                  </svg>
-                                </button>
-                                <div
-                                  id="userMenu-{{ user.id }}"
-                                  class="hidden absolute right-0 mt-2 w-48 bg-black border border-gray-700 rounded-xl shadow-lg z-50"
-                                >
-                                  <button
-                                    onclick="toggleBlock({{ user.id }}, this)"
-                                    class="w-full text-left px-4 py-3 text-red-400 hover:bg-gray-900 transition-colors rounded-xl"
-                                  >
-                                    <i class="fas fa-ban mr-2"></i>
-                                    <span class="block-text">Bloquer @{{ user.username }}</span>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          @endif
-                        </div>
-                      </div>
-                    @endeach
-                  </div>
-                </div>
-              @endif
-              
-              <!-- Tweets Results -->
-              @if(tweets.length > 0)
-                <div class="mb-8">
-                  <h3 class="text-lg font-bold mb-4 text-gray-300">
-                    Tweets
-                  </h3>
-                  <div class="space-y-4">
-                    @each(tweet in tweets)
-                      <div
-                        class="bg-gray-900 rounded-xl p-4 hover:bg-gray-800 transition-colors"
-                        data-tweet-id="{{ tweet.id }}"
-                      >
-                        <div class="flex space-x-3">
-                          <!-- Avatar -->
-                          <div
-                            class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0"
-                          >
-                            @if(tweet.user.avatar)
-                              <img src="{{ tweet.user.avatar }}" alt="Avatar" class="w-full h-full rounded-full object-cover" />
-                            @else
-                              <span class="text-white font-bold text-lg">{{ tweet.user.username.charAt(0).toUpperCase() }}</span>
-                            @endif
-                          </div>
-
-                          <!-- Content -->
-                          <div class="flex-1 min-w-0">
-                            <!-- Header -->
-                            <div class="flex items-center space-x-2 mb-2">
-                              <span class="font-bold text-white">{{ tweet.user.fullName ||
-                                            tweet.user.username }}</span>
-                              <span class="text-gray-500">@{{ tweet.user.username }}</span>
-                              <span class="text-gray-500">•</span>
-                              <span class="text-gray-500 text-sm">{{ tweet.createdAt.toFormat('dd/MM/yyyy') }}</span>
-                            </div>
-
-                            <!-- Tweet content -->
-                            <div class="text-white mb-3 break-words">
-                              {{ tweet.content }}
-                            </div>
-
-                            <!-- Image if exists -->
-                            @if(tweet.imageUrl)
-                              <div class="mb-3">
-                                <img
-                                  src="/uploads/{{ tweet.imageUrl }}"
-                                  alt="Image du tweet"
-                                  class="rounded-2xl max-w-full h-auto border border-gray-700"
-                                />
-                              </div>
-                            @endif
-                            
-                            <!-- Interactions -->
-                            <div class="flex items-center justify-between max-w-md">
-                              <!-- Like -->
-                              <button
-                                onclick="toggleLike({{ tweet.id }}, this)"
-                                class="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors group"
-                              >
-                                <div class="p-2 rounded-full group-hover:bg-red-500 group-hover:bg-opacity-20">
-                                  <i class="fas fa-heart"></i>
-                                </div>
-                                <span class="text-sm">{{ tweet.likesCount || 0 }}</span>
-                              </button>
-
-                              <!-- Retweet -->
-                              <button
-                                onclick="toggleRetweet({{ tweet.id }}, this)"
-                                class="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors group"
-                              >
-                                <div class="p-2 rounded-full group-hover:bg-green-500 group-hover:bg-opacity-20">
-                                  <i class="fas fa-retweet"></i>
-                                </div>
-                                <span class="text-sm">{{ tweet.retweetsCount || 0 }}</span>
-                              </button>
-
-                              <!-- Delete (si c'est notre tweet) -->
-                              @if(currentUser && currentUser.id === tweet.user.id)
-                                <button
-                                  onclick="deleteTweet({{ tweet.id }}, this)"
-                                  class="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors group"
-                                >
-                                  <div class="p-2 rounded-full group-hover:bg-red-500 group-hover:bg-opacity-20">
-                                    <i class="fas fa-trash"></i>
-                                  </div>
-                                </button>
-                              @endif
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    @endeach
-                  </div>
-                </div>
-              @endif
-            @else
-              <div class="text-center py-12">
-                <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-400 mb-2">
-                  Aucun résultat trouvé
-                </h3>
-                <p class="text-gray-500">
-                  Essayez avec d'autres mots-clés
-                </p>
-              </div>
-            @endif
-          </div>
-        @else
-          <div class="text-center py-12 px-4">
-            <i class="fas fa-search text-6xl text-gray-600 mb-4"></i>
-            <h3 class="text-xl font-bold text-gray-400 mb-2">
-              Recherchez des utilisateurs et des tweets
-            </h3>
-            <p class="text-gray-500">
-              Utilisez la barre de recherche ci-dessus pour commencer
-            </p>
-          </div>
-        @endif
-      </div>
-
-      <!-- Right sidebar -->
-      <div class="w-80 p-4 space-y-6">
-        <!-- Trends -->
-        <div class="bg-gray-900 rounded-xl p-4">
-          <h3 class="text-xl font-bold mb-4">
-            Tendances pour vous
-          </h3>
-          <div class="space-y-3">
-            <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
-              <div class="text-sm text-gray-500">
-                Tendance dans Technologie
-              </div>
-              <div class="font-bold">
-                #JavaScript
-              </div>
-              <div class="text-sm text-gray-500">
-                12,5 k Tweets
-              </div>
-            </div>
-            <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
-              <div class="text-sm text-gray-500">
-                Tendance dans Programmation
-              </div>
-              <div class="font-bold">
-                #AdonisJS
-              </div>
-              <div class="text-sm text-gray-500">
-                8,3 k Tweets
-              </div>
-            </div>
-            <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
-              <div class="text-sm text-gray-500">
-                Tendance dans Web
-              </div>
-              <div class="font-bold">
-                #TypeScript
-              </div>
-              <div class="text-sm text-gray-500">
-                6,2 k Tweets
-              </div>
-            </div>
-            <div class="hover:bg-gray-800 p-2 rounded cursor-pointer">
-              <div class="text-sm text-gray-500">
-                Tendance en France
-              </div>
-              <div class="font-bold">
-                #TechFrance
-              </div>
-              <div class="text-sm text-gray-500">
-                4,8 k Tweets
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Who to follow -->
-        <div class="bg-gray-900 rounded-xl p-4">
-          <h3 class="text-xl font-bold mb-4">
-            À suivre
-          </h3>
-          <div class="space-y-3">
-            @if(suggestedUsers && suggestedUsers.length > 0)
-              @each(user in suggestedUsers)
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center"
-                    >
-                      @if(user.avatar)
-                        <img
-                          src="{{ user.avatar }}"
-                          alt="Avatar de {{ user.username }}"
-                          class="w-full h-full rounded-full object-cover"
-                        />
-                      @else
-                        <span class="text-white font-bold text-sm">{{ user.username.charAt(0).toUpperCase() }}</span>
-                      @endif
-                    </div>
-                    <div>
-                      <div class="font-bold text-sm">
-                        {{ user.fullName || user.username }}
-                      </div>
-                      <div class="text-gray-500 text-sm">
-                        @{{ user.username }}
-                      </div>
-                    </div>
-                  </div>
-                  @if(currentUser && currentUser.id !== user.id)
-                    <button
-                      onclick="toggleFollow({{ user.id }}, this)"
-                      class="px-4 py-1 bg-white text-black rounded-full font-bold text-sm hover:bg-gray-200 transition-colors"
-                    >
-                      Suivre
-                        </button>
-                  @endif
-                </div>
-              @endeach
-            @else
-              <div class="text-center py-4">
-                <div class="text-gray-500 text-sm">
-                  Aucun utilisateur à suggérer
-                </div>
-              </div>
-            @endif
-          </div>
-        </div>
-      </div>
     </div>
-    <script>
-      // Fonctions pour les interactions avec les tweets
-      async function toggleLike(tweetId, button) {
-        try {
-          const response = await fetch("/tweets/" + tweetId + "/like", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-            }
-          });
-          const data = await response.json();
-          const heartIcon = button.querySelector("i");
-          const countSpan = button.querySelector("span");
-          if (data.liked) {
-            button.classList.add("text-red-500");
-            button.classList.remove("text-gray-500");
-          } else {
-            button.classList.remove("text-red-500");
-            button.classList.add("text-gray-500");
-          }
-          countSpan.textContent = data.likesCount;
-        } catch (error) {
-          console.error("Erreur lors du like:", error);
-        }
-      }
-
-      async function toggleRetweet(tweetId, button) {
-        try {
-          const response = await fetch("/tweets/" + tweetId + "/retweet", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-            }
-          });
-          const data = await response.json();
-          const countSpan = button.querySelector("span");
-          if (data.retweeted) {
-            button.classList.add("text-green-500");
-            button.classList.remove("text-gray-500");
-          } else {
-            button.classList.remove("text-green-500");
-            button.classList.add("text-gray-500");
-          }
-          countSpan.textContent = data.retweetsCount;
-        } catch (error) {
-          console.error("Erreur lors du retweet:", error);
-        }
-      }
-
-      async function deleteTweet(tweetId, button) {
-        if (confirm("Êtes-vous sûr de vouloir supprimer ce tweet ?")) {
-          try {
-            const response = await fetch("/tweets/" + tweetId, {
-              method: "DELETE",
-              headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-              }
-            });
-            if (response.ok) {
-              const tweetElement = button.closest("[data-tweet-id]");
-              tweetElement.remove();
-            } else {
-              alert("Erreur lors de la suppression");
-            }
-          } catch (error) {
-            console.error("Erreur lors de la suppression:", error);
-            alert("Erreur lors de la suppression");
-          }
-        }
-      }
-
-      async function toggleFollow(userId, button) {
-        try {
-          const response = await fetch("/users/" + userId + "/follow", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-            }
-          });
-          const data = await response.json();
-          if (data.status === "followed") {
-            button.textContent = "Suivi";
-            button.className = "px-4 py-2 bg-gray-700 text-white rounded-full font-bold hover:bg-gray-600 transition-colors";
-          } else {
-            button.textContent = "Suivre";
-            button.className = "px-4 py-2 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-colors";
-          }
-        } catch (error) {
-          console.error("Erreur lors du suivi:", error);
-        }
-      }
-      // Fonction pour basculer le menu utilisateur
-
-      function toggleUserMenu(userId) {
-        const menu = document.getElementById("userMenu-" + userId);
-        const allMenus = document.querySelectorAll('[id^="userMenu-"]');
-        // Fermer tous les autres menus
-        allMenus.forEach(m => {
-          if (m.id !== "userMenu-" + userId) {
-            m.classList.add("hidden");
+  </div>
+  <script>
+    // Fonctions pour les interactions avec les tweets
+    async function toggleLike(tweetId, button) {
+      try {
+        const response = await fetch("/tweets/" + tweetId + "/like", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
           }
         });
-        // Basculer le menu actuel
-        menu.classList.toggle("hidden");
+        const data = await response.json();
+        const heartIcon = button.querySelector("i");
+        const countSpan = button.querySelector("span");
+        if (data.liked) {
+          button.classList.add("text-red-500");
+          button.classList.remove("text-gray-500");
+        } else {
+          button.classList.remove("text-red-500");
+          button.classList.add("text-gray-500");
+        }
+        countSpan.textContent = data.likesCount;
+      } catch (error) {
+        console.error("Erreur lors du like:", error);
       }
-      // Fonction pour bloquer/débloquer un utilisateur
+    }
 
-      async function toggleBlock(userId, button) {
+    async function toggleRetweet(tweetId, button) {
+      try {
+        const response = await fetch("/tweets/" + tweetId + "/retweet", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+          }
+        });
+        const data = await response.json();
+        const countSpan = button.querySelector("span");
+        if (data.retweeted) {
+          button.classList.add("text-green-500");
+          button.classList.remove("text-gray-500");
+        } else {
+          button.classList.remove("text-green-500");
+          button.classList.add("text-gray-500");
+        }
+        countSpan.textContent = data.retweetsCount;
+      } catch (error) {
+        console.error("Erreur lors du retweet:", error);
+      }
+    }
+
+    async function deleteTweet(tweetId, button) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce tweet ?")) {
         try {
-          const response = await fetch("/users/" + userId + "/block", {
-            method: "POST",
+          const response = await fetch("/tweets/" + tweetId, {
+            method: "DELETE",
             headers: {
-              "Content-Type": "application/json",
               "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
             }
           });
-          const data = await response.json();
-          const blockText = button.querySelector(".block-text");
-          const menu = document.getElementById("userMenu-" + userId);
-          if (data.status === "blocked") {
-            blockText.textContent = "Débloquer utilisateur";
-            button.innerHTML = '<i class="fas fa-unlock mr-2"></i><span class="block-text">Débloquer utilisateur</span>';
-            // Masquer l'utilisateur de la liste (optionnel)
-            const userCard = button.closest(".bg-gray-900");
-            if (userCard) {
-              userCard.style.opacity = "0.5";
-              const nameElement = userCard.querySelector(".font-bold");
-              if (nameElement) {
-                nameElement.innerHTML += ' <span class="text-red-500 text-sm">(bloqué)</span>';
-              }
-            }
-            alert(data.message);
+          if (response.ok) {
+            const tweetElement = button.closest("[data-tweet-id]");
+            tweetElement.remove();
           } else {
-            blockText.textContent = "Bloquer utilisateur";
-            button.innerHTML = '<i class="fas fa-ban mr-2"></i><span class="block-text">Bloquer utilisateur</span>';
-            // Restaurer l'affichage normal
-            const userCard = button.closest(".bg-gray-900");
-            if (userCard) {
-              userCard.style.opacity = "1";
-              const nameElement = userCard.querySelector(".font-bold");
-              if (nameElement) {
-                nameElement.innerHTML = nameElement.innerHTML.replace(/ <span class="text-red-500 text-sm">\(bloqué\)<\/span>/, "");
-              }
-            }
-            alert(data.message);
+            alert("Erreur lors de la suppression");
           }
-          // Fermer le menu
-          menu.classList.add("hidden");
         } catch (error) {
-          console.error("Erreur lors du blocage:", error);
-          alert("Erreur lors de l'action de blocage");
+          console.error("Erreur lors de la suppression:", error);
+          alert("Erreur lors de la suppression");
         }
       }
-      // Fermer les menus en cliquant ailleurs
+    }
 
-      document.addEventListener("click", function(event) {
-        if (!event.target.closest('[onclick*="toggleUserMenu"]') && !event.target.closest('[id^="userMenu-"]')) {
-          const allMenus = document.querySelectorAll('[id^="userMenu-"]');
-          allMenus.forEach(menu => menu.classList.add("hidden"));
+    async function toggleFollow(userId, button) {
+      try {
+        const response = await fetch("/users/" + userId + "/follow", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+          }
+        });
+        const data = await response.json();
+        if (data.status === "followed") {
+          button.textContent = "Suivi";
+          button.className = "px-4 py-2 bg-gray-700 text-white rounded-full font-bold hover:bg-gray-600 transition-colors";
+        } else {
+          button.textContent = "Suivre";
+          button.className = "px-4 py-2 bg-white text-black rounded-full font-bold hover:bg-gray-200 transition-colors";
+        }
+      } catch (error) {
+        console.error("Erreur lors du suivi:", error);
+      }
+    }
+    // Fonction pour basculer le menu utilisateur
+
+    function toggleUserMenu(userId) {
+      const menu = document.getElementById("userMenu-" + userId);
+      const allMenus = document.querySelectorAll('[id^="userMenu-"]');
+      // Fermer tous les autres menus
+      allMenus.forEach(m => {
+        if (m.id !== "userMenu-" + userId) {
+          m.classList.add("hidden");
         }
       });
-      // Fonction pour aller composer un tweet
+      // Basculer le menu actuel
+      menu.classList.toggle("hidden");
+    }
+    // Fonction pour bloquer/débloquer un utilisateur
 
-      function goToComposeTweet() {
-        // Rediriger vers la page d'accueil avec un paramètre pour indiquer qu'on veut composer
-        window.location.href = "/dashboard?compose=true";
-      }
-      // Fonction pour le sélecteur de thème
-
-      function toggleThemeSelector() {
-        const selector = document.getElementById("themeSelector");
-        selector.classList.toggle("hidden");
-      }
-      // Fonction pour changer le thème
-
-      function changeTheme(theme) {
-        const body = document.body;
-        // Supprimer toutes les classes de thème existantes
-        body.classList.remove("theme-noir", "theme-blanc", "theme-vert", "theme-rouge", "theme-rose", "theme-bleu");
-        // Ajouter la nouvelle classe de thème
-        if (theme !== "noir") {
-          body.classList.add("theme-" + theme);
-        }
-        // Cacher le sélecteur
-        document.getElementById("themeSelector").classList.add("hidden");
-        // Sauvegarder le thème dans localStorage
-        localStorage.setItem("selectedTheme", theme);
-      }
-      // Charger le thème sauvegardé au chargement de la page
-
-      document.addEventListener("DOMContentLoaded", function() {
-        const savedTheme = localStorage.getItem("selectedTheme");
-        if (savedTheme) {
-          changeTheme(savedTheme);
-        }
-      });
-      // Fermer le sélecteur de thème en cliquant ailleurs
-
-      document.addEventListener("click", function(event) {
-        const themeSelector = document.getElementById("themeSelector");
-        const themeButton = event.target.closest('[onclick="toggleThemeSelector()"]');
-        if (!themeButton && !themeSelector.contains(event.target)) {
-          themeSelector.classList.add("hidden");
-        }
-      });
-      // Fonction pour les notifications
-
-      document.addEventListener("DOMContentLoaded", function() {
-        const notificationsBtn = document.getElementById("notificationsBtn");
-        const notificationBadge = document.getElementById("notificationBadge");
-        if (notificationsBtn) {
-          notificationsBtn.addEventListener("click", function() {
-            // Logique pour afficher les notifications
-            window.location.href = "/notifications";
-          });
-        }
-        // Simuler la réception de notifications (exemple)
-        // En production, ceci serait remplacé par WebSockets ou polling
-        function checkNotifications() {
-          // Exemple de simulation
-          if (Math.random() > .8) {
-            const count = Math.floor(Math.random() * 10) + 1;
-            if (notificationBadge) {
-              notificationBadge.textContent = count;
-              notificationBadge.classList.remove("hidden");
+    async function toggleBlock(userId, button) {
+      try {
+        const response = await fetch("/users/" + userId + "/block", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+          }
+        });
+        const data = await response.json();
+        const blockText = button.querySelector(".block-text");
+        const menu = document.getElementById("userMenu-" + userId);
+        if (data.status === "blocked") {
+          blockText.textContent = "Débloquer utilisateur";
+          button.innerHTML = '<i class="fas fa-unlock mr-2"></i><span class="block-text">Débloquer utilisateur</span>';
+          // Masquer l'utilisateur de la liste (optionnel)
+          const userCard = button.closest(".bg-gray-900");
+          if (userCard) {
+            userCard.style.opacity = "0.5";
+            const nameElement = userCard.querySelector(".font-bold");
+            if (nameElement) {
+              nameElement.innerHTML += ' <span class="text-red-500 text-sm">(bloqué)</span>';
             }
           }
+          alert(data.message);
+        } else {
+          blockText.textContent = "Bloquer utilisateur";
+          button.innerHTML = '<i class="fas fa-ban mr-2"></i><span class="block-text">Bloquer utilisateur</span>';
+          // Restaurer l'affichage normal
+          const userCard = button.closest(".bg-gray-900");
+          if (userCard) {
+            userCard.style.opacity = "1";
+            const nameElement = userCard.querySelector(".font-bold");
+            if (nameElement) {
+              nameElement.innerHTML = nameElement.innerHTML.replace(/ <span class="text-red-500 text-sm">\(bloqué\)<\/span>/, "");
+            }
+          }
+          alert(data.message);
         }
-        // Vérifier les notifications toutes les 30 secondes
-        setInterval(checkNotifications, 3e4);
-      });
-    </script>
-  </body>
+        // Fermer le menu
+        menu.classList.add("hidden");
+      } catch (error) {
+        console.error("Erreur lors du blocage:", error);
+        alert("Erreur lors de l'action de blocage");
+      }
+    }
+    // Fermer les menus en cliquant ailleurs
+
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest('[onclick*="toggleUserMenu"]') && !event.target.closest('[id^="userMenu-"]')) {
+        const allMenus = document.querySelectorAll('[id^="userMenu-"]');
+        allMenus.forEach(menu => menu.classList.add("hidden"));
+      }
+    });
+    // Fonction pour aller composer un tweet
+
+    function goToComposeTweet() {
+      // Rediriger vers la page d'accueil avec un paramètre pour indiquer qu'on veut composer
+      window.location.href = "/dashboard?compose=true";
+    }
+    // Fonction pour le sélecteur de thème
+
+    function toggleThemeSelector() {
+      const selector = document.getElementById("themeSelector");
+      selector.classList.toggle("hidden");
+    }
+    // Fonction pour changer le thème
+
+    function changeTheme(theme) {
+      const body = document.body;
+      // Supprimer toutes les classes de thème existantes
+      body.classList.remove("theme-noir", "theme-blanc", "theme-vert", "theme-rouge", "theme-rose", "theme-bleu");
+      // Ajouter la nouvelle classe de thème
+      if (theme !== "noir") {
+        body.classList.add("theme-" + theme);
+      }
+      // Cacher le sélecteur
+      document.getElementById("themeSelector").classList.add("hidden");
+      // Sauvegarder le thème dans localStorage
+      localStorage.setItem("selectedTheme", theme);
+    }
+    // Charger le thème sauvegardé au chargement de la page
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const savedTheme = localStorage.getItem("selectedTheme");
+      if (savedTheme) {
+        changeTheme(savedTheme);
+      }
+    });
+    // Fermer le sélecteur de thème en cliquant ailleurs
+
+    document.addEventListener("click", function (event) {
+      const themeSelector = document.getElementById("themeSelector");
+      const themeButton = event.target.closest('[onclick="toggleThemeSelector()"]');
+      if (!themeButton && !themeSelector.contains(event.target)) {
+        themeSelector.classList.add("hidden");
+      }
+    });
+    // Fonction pour les notifications
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const notificationsBtn = document.getElementById("notificationsBtn");
+      const notificationBadge = document.getElementById("notificationBadge");
+      if (notificationsBtn) {
+        notificationsBtn.addEventListener("click", function () {
+          // Logique pour afficher les notifications
+          window.location.href = "/notifications";
+        });
+      }
+      // Simuler la réception de notifications (exemple)
+      // En production, ceci serait remplacé par WebSockets ou polling
+      function checkNotifications() {
+        // Exemple de simulation
+        if (Math.random() > .8) {
+          const count = Math.floor(Math.random() * 10) + 1;
+          if (notificationBadge) {
+            notificationBadge.textContent = count;
+            notificationBadge.classList.remove("hidden");
+          }
+        }
+      }
+      // Vérifier les notifications toutes les 30 secondes
+      setInterval(checkNotifications, 3e4);
+    });
+  </script>
+</body>
 
 </html>

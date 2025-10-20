@@ -496,7 +496,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span>A rejoint en {{ user.createdAt.toFormat('MMMM yyyy', { locale: 'fr' }) }}</span>
+                    <span>A rejoint en janvier 2024</span>
                   </div>
                 </div>
               </div>
@@ -997,20 +997,6 @@
           <input type="url" id="editWebsite" name="website" value="{{ user.website || '' }}"
             placeholder="https://monsite.com"
             class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-        </div>
-
-        <!-- Informations du compte -->
-        <div class="border-t border-gray-700 pt-4 mt-4">
-          <h4 class="text-sm font-medium text-gray-300 mb-2">Informations du compte</h4>
-          <div class="bg-gray-800 p-3 rounded-md">
-            <div class="flex items-center space-x-2 text-sm text-gray-400">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span>Compte créé le {{ user.createdAt.toFormat('dd MMMM yyyy à HH:mm', { locale: 'fr' }) }}</span>
-            </div>
-          </div>
         </div>
 
         <!-- Boutons -->
