@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres de confidentialité - Twitter Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrfToken }}">
+</head>
+
+<body class="bg-black text-white min-h-screen">
+    <div class="max-w-2xl mx-auto p-6">
+        <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <h1 class="text-2xl font-bold mb-6 text-center">🔒 Paramètres de confidentialité</h1>
+
+            <!-- Statut actuel du compte -->
+            <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold">Compte privé</h3>
+                        <p class="text-gray-400 text-sm mt-1" id="accountStatus">
+                            @if(user.privateAccount)
+                            Votre compte est privé. Seuls vos abonnés peuvent voir vos tweets.
+                            @else
+                            Votre compte est public. Tout le monde peut voir vos tweets.
+                            @endif
+                        </p>
+                    </div>
+                    <div class="ml-4">
+                        <button id="togglePrivateBtn"
+                            class="px-4 py-2 rounded-full font-medium transition-all duration-200 {{ user.privateAccount ? 'bg-orange-500 hover:bg-orange-600' : 'bg-blue-500 hover:bg-blue-600' }}"
+                            data-is-private="{{ user.privateAccount }}">
+                            @if(user.privateAccount)
+                            🔓 Rendre public
+                            @else
+                            🔒 Rendre privé
+                            @endif
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explication -->
+            <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                <h3 class="text-lg font-semibold mb-3">ℹ️ Comment ça marche ?</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <p><strong>Compte public :</strong> N'importe qui peut voir vos tweets, followers et
+                            abonnements. Les utilisateurs peuvent vous suivre directement.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <p><strong>Compte privé :</strong> Seuls vos abonnés approuvés peuvent voir vos tweets,
+                            followers et abonnements. Les nouveaux utilisateurs doivent faire une demande d'abonnement.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            @if(user.privateAccount)
+            <!-- Demandes d'abonnement en attente -->
+            <div class="bg-gray-800 rounded-lg p-4 mb-6">
+                <h3 class="text-lg font-semibold mb-4">📨 Demandes d'abonnement en attente</h3>
+                <div id="followRequests" class="space-y-3">
+                    <p class="text-gray-400 text-center py-4">Chargement des demandes...</p>
+                </div>
+            </div>
+            @endif
+
+            <!-- Navigation -->
+            <div class="text-center">
+                <a href="/profile"
+                    class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-medium transition-all duration-200">
+                    ← Retour au profil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById('togglePrivateBtn');
+        const accountStatus = document.getElementById('accountStatus');
+        const followRequestsContainer = document.getElementById('followRequests');
+
+        // Basculer le statut privé/public
+        toggleBtn.addEventListener('click', async function () {
+            try {
+                const response = await fetch('/account/toggle-private', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Mettre à jour l'interface
+                    if (data.isPrivate) {
+                        toggleBtn.textContent = '🔓 Rendre public';
+                        toggleBtn.className = 'px-4 py-2 rounded-full font-medium transition-all duration-200 bg-orange-500 hover:bg-orange-600';
+                        accountStatus.textContent = 'Votre compte est privé. Seuls vos abonnés peuvent voir vos tweets.';
+                        if (followRequestsContainer) {
+                            followRequestsContainer.parentElement.style.display = 'block';
+                            loadFollowRequests();
+                        }
+                    } else {
+                        toggleBtn.textContent = '🔒 Rendre privé';
+                        toggleBtn.className = 'px-4 py-2 rounded-full font-medium transition-all duration-200 bg-blue-500 hover:bg-blue-600';
+                        accountStatus.textContent = 'Votre compte est public. Tout le monde peut voir vos tweets.';
+                        if (followRequestsContainer) {
+                            followRequestsContainer.parentElement.style.display = 'none';
+                        }
+                    }
+
+                    // Afficher un message de succès
+                    showSuccess(data.message);
+                } else {
+                    const error = await response.json();
+                    showError(error.error || 'Erreur lors de la modification');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            }
+        });
+
+        // Charger les demandes d'abonnement
+        async function loadFollowRequests() {
+            const isPrivate = {{ user.privateAccount ? 'true' : 'false' }};
+            if (!isPrivate) return;
+
+            try {
+                const response = await fetch('/follow-requests/pending', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayFollowRequests(data.requests);
+                } else {
+                    followRequestsContainer.innerHTML = '<p class="text-red-400 text-center py-4">Erreur lors du chargement des demandes</p>';
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                followRequestsContainer.innerHTML = '<p class="text-red-400 text-center py-4">Erreur de connexion</p>';
+            }
+        }
+
+        // Afficher les demandes d'abonnement
+        function displayFollowRequests(requests) {
+            if (!requests || requests.length === 0) {
+                followRequestsContainer.innerHTML = '<p class="text-gray-400 text-center py-4">Aucune demande en attente</p>';
+                return;
+            }
+
+            followRequestsContainer.innerHTML = requests.map(request => `
+                <div class="bg-gray-700 rounded-lg p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold">${request.requester.fullName?.charAt(0) || request.requester.username.charAt(0)}</span>
+                        </div>
+                        <div>
+                            <p class="font-medium">${request.requester.fullName || request.requester.username}</p>
+                            <p class="text-gray-400 text-sm">@${request.requester.username}</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="handleRequest(${request.id}, 'accept')" 
+                                class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-full text-sm font-medium transition-colors">
+                            Accepter
+                        </button>
+                        <button onclick="handleRequest(${request.id}, 'reject')" 
+                                class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-full text-sm font-medium transition-colors">
+                            Rejeter
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Gérer les demandes d'abonnement
+        async function handleRequest(requestId, action) {
+            try {
+                const response = await fetch(`/follow-requests/${requestId}/${action}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showSuccess(data.message);
+                    loadFollowRequests(); // Recharger les demandes
+                } else {
+                    const error = await response.json();
+                    showError(error.error || 'Erreur lors du traitement de la demande');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            }
+        }
+
+        // Fonctions utilitaires pour les messages
+        function showSuccess(message) {
+            const div = document.createElement('div');
+            div.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function showError(message) {
+            const div = document.createElement('div');
+            div.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        // Charger les demandes au chargement de la page si le compte est privé
+        @if (user.privateAccount)
+            loadFollowRequests();
+        @endif
+    </script>
+</body>
+
+</html>

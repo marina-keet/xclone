@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Reply from '#models/reply'
 import Tweet from '#models/tweet'
+import Notification from '#models/notification'
 import { cuid } from '@adonisjs/core/helpers'
 import app from '@adonisjs/core/services/app'
 
@@ -33,6 +34,24 @@ export default class RepliesController {
     await tweet.save()
 
     await reply.load('user')
+
+    // Créer une notification pour l'auteur du tweet (sauf si c'est son propre tweet)
+    await tweet.load('user')
+    if (tweet.userId !== user.id) {
+      console.log(`💬 Création de notification comment: ${user.username} -> ${tweet.user.username}`)
+      const commentNotification = await Notification.create({
+        userId: tweet.userId,
+        fromUserId: user.id,
+        type: 'comment',
+        tweetId: tweetId,
+        message: `@${user.username} a commenté votre tweet`,
+        isRead: false,
+      })
+      console.log(`✅ Notification comment créée:`, commentNotification.toJSON())
+      console.log(`💬 ${user.username} a commenté le tweet de ${tweet.user.username}`)
+    } else {
+      console.log(`👤 ${user.username} a commenté son propre tweet - pas de notification`)
+    }
 
     if (request.accepts(['json'])) {
       return response.json({

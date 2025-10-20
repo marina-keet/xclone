@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Follow from '#models/follow'
 import Notification from '#models/notification'
+import FollowRequest from '#models/follow_request'
 
 export default class FollowsController {
   /**
@@ -41,44 +42,90 @@ export default class FollowsController {
           message: `Vous ne suivez plus @${targetUser.username}`,
         })
       } else {
-        // Follow
-        console.log(`👤 Tentative de suivi: ${currentUser.username} -> ${targetUser.username}`)
+        // Vérifier s'il y a une demande en attente
+        const existingRequest = await FollowRequest.query()
+          .where('requester_id', currentUser.id)
+          .where('requested_id', targetUserId)
+          .where('status', 'pending')
+          .first()
 
-        const newFollow = await Follow.create({
-          followerId: currentUser.id,
-          followingId: targetUserId,
-          accepted: true,
-        })
-        console.log(`✅ Follow créé:`, newFollow.toJSON())
+        if (existingRequest) {
+          return response.status(400).json({
+            error: "Demande d'abonnement déjà envoyée",
+            status: 'request_pending',
+          })
+        }
 
-        // Mettre à jour les compteurs
-        currentUser.followingCount = currentUser.followingCount + 1
-        targetUser.followersCount = targetUser.followersCount + 1
-        await currentUser.save()
-        await targetUser.save()
-        console.log(
-          `📊 Compteurs mis à jour: ${currentUser.username} suit ${currentUser.followingCount}, ${targetUser.username} a ${targetUser.followersCount} followers`
-        )
+        // Si le compte est privé, créer une demande
+        if (targetUser.privateAccount) {
+          console.log(`🔒 Compte privé détecté: ${targetUser.username}`)
 
-        // Créer une notification pour l'utilisateur suivi
-        console.log(`🔔 Création de notification pour ${targetUser.username}`)
-        const notification = await Notification.create({
-          userId: targetUserId,
-          fromUserId: currentUser.id,
-          type: 'follow',
-          tweetId: null,
-          message: `@${currentUser.username} s'est abonné à vous`,
-          isRead: false,
-        })
-        console.log(`✅ Notification créée:`, notification.toJSON())
+          const followRequest = await FollowRequest.create({
+            requesterId: currentUser.id,
+            requestedId: targetUserId,
+            status: 'pending',
+          })
 
-        console.log(`✅ ${currentUser.username} suit maintenant ${targetUser.username}`)
-        console.log(`📧 Notification envoyée à ${targetUser.username}`)
+          // Créer une notification pour la demande
+          await Notification.create({
+            userId: targetUserId,
+            fromUserId: currentUser.id,
+            type: 'follow_request',
+            tweetId: null,
+            message: `@${currentUser.username} demande à vous suivre`,
+            isRead: false,
+          })
 
-        return response.json({
-          status: 'followed',
-          message: `Vous suivez maintenant @${targetUser.username}`,
-        })
+          console.log(
+            `📨 Demande d'abonnement créée: ${currentUser.username} -> ${targetUser.username}`
+          )
+
+          return response.json({
+            status: 'request_sent',
+            message: `Demande envoyée à @${targetUser.username}`,
+          })
+        } else {
+          // Compte public - suivre directement
+          console.log(
+            `👤 Tentative de suivi direct: ${currentUser.username} -> ${targetUser.username}`
+          )
+
+          const newFollow = await Follow.create({
+            followerId: currentUser.id,
+            followingId: targetUserId,
+            accepted: true,
+          })
+          console.log(`✅ Follow créé:`, newFollow.toJSON())
+
+          // Mettre à jour les compteurs
+          currentUser.followingCount = currentUser.followingCount + 1
+          targetUser.followersCount = targetUser.followersCount + 1
+          await currentUser.save()
+          await targetUser.save()
+          console.log(
+            `📊 Compteurs mis à jour: ${currentUser.username} suit ${currentUser.followingCount}, ${targetUser.username} a ${targetUser.followersCount} followers`
+          )
+
+          // Créer une notification pour l'utilisateur suivi
+          console.log(`🔔 Création de notification pour ${targetUser.username}`)
+          const notification = await Notification.create({
+            userId: targetUserId,
+            fromUserId: currentUser.id,
+            type: 'follow',
+            tweetId: null,
+            message: `@${currentUser.username} s'est abonné à vous`,
+            isRead: false,
+          })
+          console.log(`✅ Notification créée:`, notification.toJSON())
+
+          console.log(`✅ ${currentUser.username} suit maintenant ${targetUser.username}`)
+          console.log(`📧 Notification envoyée à ${targetUser.username}`)
+
+          return response.json({
+            status: 'followed',
+            message: `Vous suivez maintenant @${targetUser.username}`,
+          })
+        }
       }
     } catch (error) {
       console.error('Erreur lors du suivi:', error)

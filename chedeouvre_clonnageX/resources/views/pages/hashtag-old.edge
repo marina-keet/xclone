@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>#{{ hashtag.name }} - Twitter Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "x-blue": "#1d9bf0"
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body class="bg-black text-white font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar gauche -->
+        <div class="w-64 flex flex-col bg-black border-r border-gray-800 fixed h-full z-30">
+            <div class="flex-1 flex flex-col min-h-0">
+                <!-- Logo X -->
+                <div class="mb-2 p-3">
+                    <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 px-3 overflow-hidden">
+                    <div class="space-y-0.5">
+                        <!-- Maison -->
+                        <a href="/dashboard"
+                            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 9c-2.209 0-4 1.791-4 4s1.791 4 4 4 4-1.791 4-4-1.791-4-4-4zm9.707-5.293l-9-9a.999.999 0 00-1.414 0l-9 9A.999.999 0 003 5.414V19a3 3 0 003 3h4a1 1 0 001-1v-3a1 1 0 011-1h2a1 1 0 011 1v3a1 1 0 001 1h4a3 3 0 003-3V5.414a.999.999 0 00-.293-.707z" />
+                            </svg>
+                            <span class="text-lg">Maison</span>
+                        </a>
+
+                        <!-- Recherche -->
+                        <a href="/search"
+                            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span class="text-lg">Recherche</span>
+                        </a>
+
+                        <!-- Profil -->
+                        <a href="/profile"
+                            class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="text-lg">Profil</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <main class="flex-1 ml-64">
+            <div class="max-w-2xl mx-auto border-x border-gray-800 min-h-screen">
+                <!-- Header -->
+                <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur border-b border-gray-800 p-4 z-20">
+                    <div class="flex items-center space-x-4">
+                        <a href="/dashboard" class="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                        <div>
+                            <h1 class="text-xl font-bold">#{{ hashtag.name }}</h1>
+                            <p class="text-gray-400 text-sm">{{ hashtag.tweetCount }} tweets</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informations du hashtag -->
+                <div class="p-4 border-b border-gray-800">
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">#️⃣</div>
+                        <h2 class="text-2xl font-bold mb-2">#{{ hashtag.name }}</h2>
+                        <p class="text-gray-400">
+                            {{ hashtag.tweetCount }} {{ hashtag.tweetCount === 1 ? 'tweet' : 'tweets' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Liste des tweets -->
+                <div class="divide-y divide-gray-800">
+                    @if(tweets.length > 0)
+                    @each(tweet in tweets)
+                    <div class="p-4 hover:bg-gray-900 hover:bg-opacity-50 transition-colors cursor-pointer">
+                        <div class="flex space-x-3">
+                            <!-- Avatar utilisateur -->
+                            <div
+                                class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-bold text-sm">
+                                    {{ tweet.user.fullName?.charAt(0) || tweet.user.username.charAt(0) }}
+                                </span>
+                            </div>
+
+                            <!-- Contenu du tweet -->
+                            <div class="flex-1 min-w-0">
+                                <!-- Header du tweet -->
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="font-semibold text-white">{{ tweet.user.fullName || tweet.user.username
+                                        }}</span>
+                                    <span class="text-gray-500">@{{ tweet.user.username }}</span>
+                                    <span class="text-gray-500">·</span>
+                                    <span class="text-gray-500 text-sm">{{ tweet.createdAt.toFormat('dd/MM/yyyy HH:mm')
+                                        }}</span>
+                                </div>
+
+                                <!-- Contenu avec hashtags formatés -->
+                                <div class="text-white mb-3 whitespace-pre-wrap break-words">
+                                    {{{ tweet.formattedContent }}}
+                                </div>
+
+                                <!-- Image si présente -->
+                                @if(tweet.imageUrl)
+                                <div class="mb-3 rounded-2xl overflow-hidden border border-gray-700">
+                                    <img src="/uploads/{{ tweet.imageUrl }}" alt="Image du tweet"
+                                        class="w-full max-h-96 object-cover" loading="lazy">
+                                </div>
+                                @endif
+
+                                <!-- Actions du tweet -->
+                                <div class="flex items-center justify-between max-w-md mt-3">
+                                    <!-- Réponses -->
+                                    <button
+                                        class="flex items-center space-x-2 p-2 rounded-full hover:bg-blue-900 hover:bg-opacity-20 transition-colors group">
+                                        <svg class="w-5 h-5 text-gray-500 group-hover:text-blue-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+                                        <span class="text-gray-500 group-hover:text-blue-400 text-sm">{{
+                                            tweet.repliesCount }}</span>
+                                    </button>
+
+                                    <!-- Retweets -->
+                                    <button
+                                        class="flex items-center space-x-2 p-2 rounded-full hover:bg-green-900 hover:bg-opacity-20 transition-colors group">
+                                        <svg class="w-5 h-5 text-gray-500 group-hover:text-green-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        <span class="text-gray-500 group-hover:text-green-400 text-sm">{{
+                                            tweet.retweetsCount }}</span>
+                                    </button>
+
+                                    <!-- Likes -->
+                                    <button
+                                        class="flex items-center space-x-2 p-2 rounded-full hover:bg-red-900 hover:bg-opacity-20 transition-colors group">
+                                        <svg class="w-5 h-5 text-gray-500 group-hover:text-red-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                        </svg>
+                                        <span class="text-gray-500 group-hover:text-red-400 text-sm">{{ tweet.likesCount
+                                            }}</span>
+                                    </button>
+
+                                    <!-- Partager -->
+                                    <button
+                                        class="flex items-center space-x-2 p-2 rounded-full hover:bg-blue-900 hover:bg-opacity-20 transition-colors group">
+                                        <svg class="w-5 h-5 text-gray-500 group-hover:text-blue-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endeach
+                    @else
+                    <div class="p-8 text-center">
+                        <div class="text-6xl mb-4">📭</div>
+                        <h3 class="text-xl font-semibold mb-2">Aucun tweet trouvé</h3>
+                        <p class="text-gray-400">Il n'y a pas encore de tweets avec ce hashtag.</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

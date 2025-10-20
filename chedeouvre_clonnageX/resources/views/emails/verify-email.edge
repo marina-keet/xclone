@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Vérification de votre adresse email
+    </title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+      
+      .email-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 40px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .logo {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      
+      .logo h1 {
+        color: #1da1f2;
+        font-size: 28px;
+        margin: 0;
+        font-weight: bold;
+      }
+      
+      .content {
+        text-align: center;
+      }
+      
+      .content h2 {
+        color: #14171a;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      
+      .content p {
+        color: #657786;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .verify-button {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #1da1f2;
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 16px;
+        margin: 20px 0;
+        transition: background-color 0.3s;
+      }
+      
+      .verify-button:hover {
+        background-color: #0d8bd9;
+      }
+      
+      .alternative-link {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f7f9fa;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #657786;
+      }
+      
+      .alternative-link a {
+        color: #1da1f2;
+        word-break: break-all;
+      }
+      
+      .footer {
+        margin-top: 40px;
+        text-align: center;
+        color: #657786;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-container">
+      <div class="logo">
+        <h1>
+          🐦 Twitter Clone
+        </h1>
+      </div>
+
+      <div class="content">
+        <h2>
+          Vérifiez votre adresse email
+        </h2>
+
+        <p>
+          Bonjour <strong>{{ user.fullName || user.username }}</strong>,
+        </p>
+
+        <p>
+          Merci de vous être inscrit sur Twitter Clone ! Pour finaliser la création de votre compte, veuillez
+                vérifier votre adresse email en cliquant sur le bouton ci-dessous :
+        </p>
+
+        <a href="{{ verificationUrl }}" class="verify-button">Vérifier mon email</a>
+
+        <p>
+          Ce lien de vérification expirera dans 24 heures pour des raisons de sécurité.
+        </p>
+
+        <div class="alternative-link">
+          <p>
+            <strong>Le bouton ne fonctionne pas ?</strong>
+          </p>
+          <p>
+            Copiez et collez ce lien dans votre navigateur :
+          </p>
+          <a href="{{ verificationUrl }}">{{ verificationUrl }}</a>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          Si vous n'avez pas créé de compte sur Twitter Clone, vous pouvez ignorer cet email.
+        </p>
+        <p>
+          © 2025 Twitter Clone - Tous droits réservés
+        </p>
+      </div>
+    </div>
+  </body>
+
+</html>

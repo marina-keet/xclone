@@ -1,10 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./resources/views/**/*.edge",
-    "./resources/js/**/*.js",
-    "./resources/css/**/*.css",
-  ],
+  content: ['./resources/views/**/*.edge', './resources/js/**/*.js', './resources/css/**/*.css'],
   theme: {
     extend: {
       colors: {
@@ -14,7 +10,7 @@ export default {
         'x-light-gray': '#f7f9fa',
       },
       fontFamily: {
-        'chirp': ['TwitterChirp', 'system-ui', 'sans-serif'],
+        chirp: ['TwitterChirp', 'system-ui', 'sans-serif'],
       },
     },
   },

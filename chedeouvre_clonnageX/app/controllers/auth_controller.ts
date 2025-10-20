@@ -29,8 +29,8 @@ export default class AuthController {
         return response.redirect().back()
       }
 
-      // Créer le nouvel utilisateur
-      await User.create({
+      // Créer le nouvel utilisateur (directement vérifié)
+      const user = await User.create({
         username: data.username,
         fullName: data.fullName,
         email: data.email,
@@ -43,12 +43,11 @@ export default class AuthController {
         tweetsCount: 0,
       })
 
-      // Rediriger vers la page de connexion avec un message de succès
-      session.flash(
-        'success',
-        'Compte créé avec succès ! Veuillez vous connecter avec vos identifiants.'
-      )
-      return response.redirect('/')
+      console.log(`✅ Nouveau compte créé: ${user.username} (${user.email})`)
+
+      // Connexion automatique
+      session.flash('success', 'Compte créé avec succès ! Vous êtes maintenant connecté.')
+      return response.redirect('/dashboard')
     } catch (error) {
       console.error("Erreur lors de l'inscription:", error)
       session.flash('error', 'Erreur lors de la création du compte')
@@ -90,6 +89,7 @@ export default class AuthController {
 
       // Tenter la connexion avec email ou username
       const user = await User.verifyCredentials(cleanIdentifier, cleanPassword)
+
       await auth.use('web').login(user)
 
       console.log('✅ Connexion réussie pour:', user.email)
@@ -117,9 +117,25 @@ export default class AuthController {
     await auth.authenticate()
     const user = auth.getUserOrFail()
 
-    // Récupérer tous les tweets pour le feed
+    // Récupérer tous les tweets pour le feed avec hashtags
     const { default: Tweet } = await import('#models/tweet')
-    const tweets = await Tweet.query().preload('user').orderBy('created_at', 'desc').limit(50) // Limiter à 50 tweets récents
+    const { HashtagService } = await import('#services/hashtag_service')
+    const tweets = await Tweet.query()
+      .preload('user')
+      .preload('hashtags')
+      .orderBy('created_at', 'desc')
+      .limit(50)
+
+    // Formater les tweets avec les hashtags cliquables
+    const formattedTweets = tweets.map((tweet) => {
+      const serialized = tweet.serialize()
+      return {
+        ...serialized,
+        createdAt: tweet.createdAt, // Préserver l'objet DateTime original
+        updatedAt: tweet.updatedAt, // Préserver l'objet DateTime original
+        formattedContent: HashtagService.formatTextWithHashtags(tweet.content),
+      }
+    })
 
     // Récupérer des suggestions d'utilisateurs à suivre (excluant l'utilisateur actuel)
     const suggestedUsers = await User.query()
@@ -127,7 +143,7 @@ export default class AuthController {
       .orderBy('created_at', 'desc')
       .limit(5)
 
-    return view.render('pages/home_twitter', { user, tweets, suggestedUsers })
+    return view.render('pages/home_twitter', { user, tweets: formattedTweets, suggestedUsers })
   }
 
   /**
@@ -137,13 +153,26 @@ export default class AuthController {
     await auth.authenticate()
     const user = auth.getUserOrFail()
 
-    // Récupérer les tweets de l'utilisateur
+    // Récupérer les tweets de l'utilisateur avec hashtags
     const { default: Tweet } = await import('#models/tweet')
+    const { HashtagService } = await import('#services/hashtag_service')
     const tweets = await Tweet.query()
       .where('userId', user.id)
       .orderBy('createdAt', 'desc')
       .preload('user')
+      .preload('hashtags')
       .exec()
+
+    // Formater les tweets avec les hashtags cliquables
+    const formattedTweets = tweets.map((tweet) => {
+      const serialized = tweet.serialize()
+      return {
+        ...serialized,
+        createdAt: tweet.createdAt, // Préserver l'objet DateTime original
+        updatedAt: tweet.updatedAt, // Préserver l'objet DateTime original
+        formattedContent: HashtagService.formatTextWithHashtags(tweet.content),
+      }
+    })
 
     console.log(`📊 Profil de ${user.username}:`)
     console.log(`   - Nombre de tweets: ${tweets.length}`)
@@ -155,6 +184,6 @@ export default class AuthController {
       )
     }
 
-    return view.render('pages/profil', { user, tweets })
+    return view.render('pages/profil', { user, tweets: formattedTweets })
   }
 }

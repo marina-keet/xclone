@@ -1,102 +1,118 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrfToken }}">
-    <title>Utilisateurs bloqués - Twitter Clone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrfToken }}" />
+    <title>
+      Utilisateurs bloqués - Twitter Clone
+    </title>
+    <script src="https://cdn.tailwindcss.com">
 
-<body class="bg-black text-white min-h-screen">
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+
+  <body class="bg-black text-white min-h-screen">
     <div class="max-w-2xl mx-auto p-4">
-        <div class="flex items-center mb-6">
-            <a href="/dashboard" class="mr-4 p-2 rounded-full hover:bg-gray-800 transition-colors">
-                <i class="fas fa-arrow-left text-xl"></i>
-            </a>
-            <h1 class="text-2xl font-bold">Utilisateurs bloqués</h1>
-        </div>
+      <div class="flex items-center mb-6">
+        <a href="/dashboard" class="mr-4 p-2 rounded-full hover:bg-gray-800 transition-colors">
+          <i class="fas fa-arrow-left text-xl"></i>
+        </a>
+        <h1 class="text-2xl font-bold">
+          Utilisateurs bloqués
+        </h1>
+      </div>
 
-        @if(blocks.length > 0)
+      @if(blocks.length > 0)
         <div class="space-y-4">
-            @each(block in blocks)
+          @each(block in blocks)
             <div class="bg-gray-900 rounded-xl p-4 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div
-                        class="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-pink-600 flex items-center justify-center">
-                        @if(block.blocked.avatar)
-                        <img src="{{ block.blocked.avatar }}" alt="Avatar"
-                            class="w-full h-full rounded-full object-cover">
-                        @else
-                        <span class="text-white font-bold text-lg">{{ block.blocked.username.charAt(0).toUpperCase()
-                            }}</span>
-                        @endif
-                    </div>
-                    <div>
-                        <div class="font-bold text-white">{{ block.blocked.fullName || block.blocked.username }}</div>
-                        <div class="text-gray-500">@{{ block.blocked.username }}</div>
-                        <div class="text-sm text-red-400 mt-1">Bloqué le {{ block.createdAt.toFormat('dd/MM/yyyy') }}
-                        </div>
-                    </div>
+              <div class="flex items-center space-x-3">
+                <div
+                  class="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-pink-600 flex items-center justify-center"
+                >
+                  @if(block.blocked.avatar)
+                    <img src="{{ block.blocked.avatar }}" alt="Avatar" class="w-full h-full rounded-full object-cover" />
+                  @else
+                    <span class="text-white font-bold text-lg">{{ block.blocked.username.charAt(0).toUpperCase() }}</span>
+                  @endif
                 </div>
-                <button onclick="toggleBlock({{ block.blocked.id }}, this)"
-                    class="px-4 py-2 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-colors">
-                    Débloquer
+                <div>
+                  <div class="font-bold text-white">
+                    {{ block.blocked.fullName || block.blocked.username }}
+                  </div>
+                  <div class="text-gray-500">
+                    @{{ block.blocked.username }}
+                  </div>
+                  <div class="text-sm text-red-400 mt-1">
+                    Bloqué le {{ block.createdAt.toFormat('dd/MM/yyyy') }}
+                  </div>
+                </div>
+              </div>
+              <button
+                onclick="toggleBlock({{ block.blocked.id }}, this)"
+                class="px-4 py-2 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-colors"
+              >
+                Débloquer
                 </button>
             </div>
-            @endeach
+          @endeach
         </div>
-        @else
+      @else
         <div class="text-center py-12">
-            <i class="fas fa-ban text-6xl text-gray-600 mb-4"></i>
-            <h3 class="text-xl font-bold text-gray-400 mb-2">Aucun utilisateur bloqué</h3>
-            <p class="text-gray-500">Vous n'avez bloqué aucun utilisateur pour le moment.</p>
+          <i class="fas fa-ban text-6xl text-gray-600 mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-400 mb-2">
+            Aucun utilisateur bloqué
+          </h3>
+          <p class="text-gray-500">
+            Vous n'avez bloqué aucun utilisateur pour le moment.
+          </p>
         </div>
-        @endif
+      @endif
     </div>
 
     <script>
-        async function toggleBlock(userId, button) {
-            try {
-                const response = await fetch('/users/' + userId + '/block', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'unblocked') {
-                    // Supprimer l'utilisateur de la liste
-                    const userCard = button.closest('.bg-gray-900');
-                    userCard.style.transition = 'opacity 0.3s';
-                    userCard.style.opacity = '0';
-                    setTimeout(() => {
-                        userCard.remove();
-                        // Vérifier s'il reste des utilisateurs
-                        const remainingUsers = document.querySelectorAll('.bg-gray-900').length;
-                        if (remainingUsers === 0) {
-                            location.reload(); // Recharger pour afficher le message "Aucun utilisateur bloqué"
-                        }
-                    }, 300);
-
-                    // Afficher un message de confirmation
-                    const toast = document.createElement('div');
-                    toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-                    toast.textContent = data.message;
-                    document.body.appendChild(toast);
-                    setTimeout(() => toast.remove(), 3000);
-                }
-            } catch (error) {
-                console.error('Erreur lors du déblocage:', error);
-                alert('Erreur lors du déblocage de l\'utilisateur');
+      async function toggleBlock(userId, button) {
+        try {
+          const response = await fetch("/users/" + userId + "/block", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
             }
+          });
+          const data = await response.json();
+          if (data.status === "unblocked") {
+            // Supprimer l'utilisateur de la liste
+            const userCard = button.closest(".bg-gray-900");
+            userCard.style.transition = "opacity 0.3s";
+            userCard.style.opacity = "0";
+            setTimeout(() => {
+              userCard.remove();
+              // Vérifier s'il reste des utilisateurs
+              const remainingUsers = document.querySelectorAll(".bg-gray-900").length;
+              if (remainingUsers === 0) {
+                location.reload(); // Recharger pour afficher le message "Aucun utilisateur bloqué"
+              }
+            }, 300);
+            // Afficher un message de confirmation
+            const toast = document.createElement("div");
+            toast.className = "fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50";
+            toast.textContent = data.message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3e3);
+          }
+        } catch (error) {
+          console.error("Erreur lors du déblocage:", error);
+          alert("Erreur lors du déblocage de l'utilisateur");
         }
+      }
     </script>
-</body>
+  </body>
 
 </html>

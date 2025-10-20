@@ -8,7 +8,7 @@ const user = await Database.table('users').insert({
   password: await hash.make('password123'),
   full_name: 'Test User',
   created_at: new Date(),
-  updated_at: new Date()
+  updated_at: new Date(),
 })
 
 console.log('User created:', user)
