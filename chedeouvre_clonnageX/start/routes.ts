@@ -8,6 +8,7 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 import Notification from '#models/notification'
 const AuthController = () => import('#controllers/auth_controller')
 const TweetsController = () => import('#controllers/tweets_controller')
@@ -20,6 +21,7 @@ const SearchController = () => import('#controllers/search_controller')
 const BlocksController = () => import('#controllers/blocks_controller')
 const HashtagsController = () => import('#controllers/hashtags_controller')
 const GrokController = () => import('#controllers/grok_controller')
+const MessagesController = () => import('#controllers/messages_controller')
 
 // Route pour servir les fichiers uploadés
 router.get('/uploads/*', ({ response, request }) => {
@@ -149,6 +151,32 @@ router
 router.get('/hashtag/:slug', [HashtagsController, 'show']).as('hashtag.show')
 router.get('/hashtags/search', [HashtagsController, 'search']).as('hashtags.search')
 router.get('/trending-hashtags', [HashtagsController, 'trending']).as('hashtags.trending')
+
+// Routes pour les messages privés
+router
+  .group(() => {
+    router.get('/', [MessagesController, 'index']).as('index')
+    router.get('/:userId', [MessagesController, 'show']).as('show')
+    router.post('/', [MessagesController, 'store']).as('store')
+  })
+  .prefix('/messages')
+  .as('messages')
+  .use(middleware.auth())
+
+router
+  .post('/api/messages', [MessagesController, 'apiStore'])
+  .as('messages.api.store')
+  .use(middleware.auth())
+
+router
+  .get('/api/users/search', [MessagesController, 'searchUsers'])
+  .as('messages.api.searchUsers')
+  .use(middleware.auth())
+
+router
+  .get('/api/messages/:userId/new', [MessagesController, 'getNewMessages'])
+  .as('messages.api.getNew')
+  .use(middleware.auth())
 
 // Routes pour Grok AI
 router

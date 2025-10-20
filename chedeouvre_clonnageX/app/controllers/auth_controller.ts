@@ -143,7 +143,22 @@ export default class AuthController {
       .orderBy('created_at', 'desc')
       .limit(5)
 
-    return view.render('pages/home_twitter', { user, tweets: formattedTweets, suggestedUsers })
+    // Calculer le nombre total de messages non lus
+    const { default: Message } = await import('#models/message')
+    const totalUnreadCount = await Message.query()
+      .where('receiver_id', user.id)
+      .whereNull('read_at')
+      .count('* as total')
+      .first()
+
+    const unreadMessagesCount = totalUnreadCount ? Number(totalUnreadCount.$extras.total) : 0
+
+    return view.render('pages/home_twitter', {
+      user,
+      tweets: formattedTweets,
+      suggestedUsers,
+      totalUnreadCount: unreadMessagesCount,
+    })
   }
 
   /**

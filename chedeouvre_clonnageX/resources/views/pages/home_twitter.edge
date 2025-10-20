@@ -182,12 +182,20 @@
             </button>
 
             <!-- Messages -->
-            <a href="#"
-              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
+            <a href="/messages"
+              class="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-900 transition-all duration-200 relative">
+              <div class="relative">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                @if(totalUnreadCount > 0)
+                <span
+                  class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {{ totalUnreadCount > 99 ? '99+' : totalUnreadCount }}
+                </span>
+                @endif
+              </div>
               <span class="text-lg">Messages</span>
             </a>
 
