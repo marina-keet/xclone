@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Tweet from '#models/tweet'
-import { Database } from '@adonisjs/lucid/database'
+import db from '@adonisjs/lucid/services/db'
 
 export default class SearchController {
   /**
@@ -72,12 +72,12 @@ export default class SearchController {
           let hasRetweeted = false
 
           if (currentUser) {
-            const existingLike = await Database.from('likes')
+            const existingLike = await db.from('likes')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
 
-            const existingRetweet = await Database.from('retweets')
+            const existingRetweet = await db.from('retweets')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
@@ -162,12 +162,12 @@ export default class SearchController {
           let hasRetweeted = false
 
           if (currentUser) {
-            const existingLike = await Database.from('likes')
+            const existingLike = await db.from('likes')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
 
-            const existingRetweet = await Database.from('retweets')
+            const existingRetweet = await db.from('retweets')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()

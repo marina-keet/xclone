@@ -10,7 +10,7 @@ const mailConfig = defineConfig({
   mailers: {
     smtp: transports.smtp({
       host: env.get('SMTP_HOST', 'smtp.gmail.com'),
-      port: env.get('SMTP_PORT', 587),
+      port: Number(env.get('SMTP_PORT', '587')),
       secure: false, // true pour 465, false pour 587
       auth: {
         type: 'login',
