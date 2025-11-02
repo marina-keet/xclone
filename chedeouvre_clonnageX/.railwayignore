@@ -1,0 +1,35 @@
+# Fichiers à ignorer lors du déploiement Railway
+
+# Development
+.env
+.env.example
+.env.local
+
+# Tests et documentation
+tests/
+coverage/
+*.md
+docs/
+
+# IDE et OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime
+tmp/
+temp/
+.cache/
+
+# Uploads locaux (utiliser cloud storage en prod)
+uploads/
+public/uploads/
+
+# Node modules (Railway installe automatiquement)
+node_modules/

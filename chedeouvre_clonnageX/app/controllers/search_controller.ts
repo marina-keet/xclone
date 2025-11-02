@@ -72,12 +72,14 @@ export default class SearchController {
           let hasRetweeted = false
 
           if (currentUser) {
-            const existingLike = await db.from('likes')
+            const existingLike = await db
+              .from('likes')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
 
-            const existingRetweet = await db.from('retweets')
+            const existingRetweet = await db
+              .from('retweets')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
@@ -162,12 +164,14 @@ export default class SearchController {
           let hasRetweeted = false
 
           if (currentUser) {
-            const existingLike = await db.from('likes')
+            const existingLike = await db
+              .from('likes')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
 
-            const existingRetweet = await db.from('retweets')
+            const existingRetweet = await db
+              .from('retweets')
               .where('user_id', currentUser.id)
               .where('tweet_id', tweet.id)
               .first()
